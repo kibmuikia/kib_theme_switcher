@@ -1,0 +1,17 @@
+[1;36mlib[0m
+├── common_export.dart
+├── [1;36mget_it[0m
+│   ├── export.dart
+│   └── setup.dart
+├── main.dart
+├── [1;36mscreens[0m
+│   ├── export.dart
+│   └── home.dart
+└── [1;36mutils[0m
+    └── [1;36mtheme[0m
+        ├── app_colors.dart
+        ├── app_theme.dart
+        ├── export.dart
+        └── theme_service.dart
+
+5 directories, 10 files
