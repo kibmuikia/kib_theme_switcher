@@ -2,7 +2,7 @@ import 'package:app_database/app_database.dart';
 import 'package:flutter/material.dart' show ThemeData, ValueNotifier, debugPrint;
 import 'package:kib_theme_switcher/utils/theme/app_theme.dart';
 
-enum ThemeMode { light, dark, system, unknown }
+// enum ThemeMode { light, dark, system, unknown }
 
 /// Service to manage theme state and preferences
 class ThemeService {
