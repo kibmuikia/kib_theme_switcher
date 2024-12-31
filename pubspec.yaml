@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_bloc: ^8.1.6
   get_it: ^8.0.3
+  app_database:
+    path: packages/app_database
 
 dev_dependencies:
   flutter_test:

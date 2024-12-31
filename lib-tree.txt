@@ -1,17 +1,343 @@
-[1;36mlib[0m
-├── common_export.dart
-├── [1;36mget_it[0m
-│   ├── export.dart
-│   └── setup.dart
-├── main.dart
-├── [1;36mscreens[0m
-│   ├── export.dart
-│   └── home.dart
-└── [1;36mutils[0m
-    └── [1;36mtheme[0m
-        ├── app_colors.dart
-        ├── app_theme.dart
-        ├── export.dart
-        └── theme_service.dart
+[1;36m.[0m
+├── README.md
+├── analysis_options.yaml
+├── [1;36mandroid[0m
+│   ├── [1;36mapp[0m
+│   │   ├── build.gradle
+│   │   └── [1;36msrc[0m
+│   │       ├── [1;36mdebug[0m
+│   │       │   └── AndroidManifest.xml
+│   │       ├── [1;36mmain[0m
+│   │       │   ├── AndroidManifest.xml
+│   │       │   ├── [1;36mjava[0m
+│   │       │   │   └── [1;36mio[0m
+│   │       │   │       └── [1;36mflutter[0m
+│   │       │   │           └── [1;36mplugins[0m
+│   │       │   │               └── GeneratedPluginRegistrant.java
+│   │       │   ├── [1;36mkotlin[0m
+│   │       │   │   └── [1;36mkib[0m
+│   │       │   │       └── [1;36mdev[0m
+│   │       │   │           └── [1;36mkib_theme_switcher[0m
+│   │       │   │               └── MainActivity.kt
+│   │       │   └── [1;36mres[0m
+│   │       │       ├── [1;36mdrawable[0m
+│   │       │       │   └── launch_background.xml
+│   │       │       ├── [1;36mdrawable-v21[0m
+│   │       │       │   └── launch_background.xml
+│   │       │       ├── [1;36mmipmap-hdpi[0m
+│   │       │       │   └── ic_launcher.png
+│   │       │       ├── [1;36mmipmap-mdpi[0m
+│   │       │       │   └── ic_launcher.png
+│   │       │       ├── [1;36mmipmap-xhdpi[0m
+│   │       │       │   └── ic_launcher.png
+│   │       │       ├── [1;36mmipmap-xxhdpi[0m
+│   │       │       │   └── ic_launcher.png
+│   │       │       ├── [1;36mmipmap-xxxhdpi[0m
+│   │       │       │   └── ic_launcher.png
+│   │       │       ├── [1;36mvalues[0m
+│   │       │       │   └── styles.xml
+│   │       │       └── [1;36mvalues-night[0m
+│   │       │           └── styles.xml
+│   │       └── [1;36mprofile[0m
+│   │           └── AndroidManifest.xml
+│   ├── build.gradle
+│   ├── [1;36mgradle[0m
+│   │   └── [1;36mwrapper[0m
+│   │       ├── gradle-wrapper.jar
+│   │       └── gradle-wrapper.properties
+│   ├── gradle.properties
+│   ├── [31mgradlew[0m
+│   ├── gradlew.bat
+│   ├── kib_theme_switcher_android.iml
+│   ├── local.properties
+│   └── settings.gradle
+├── [1;36mbuild[0m
+│   ├── [1;36mab023de55353ce40195536175dfa1b09[0m
+│   │   ├── _composite.stamp
+│   │   ├── gen_dart_plugin_registrant.stamp
+│   │   └── gen_localizations.stamp
+│   ├── f872507f30e2ff2523f0f1d19160266e.cache.dill.track.dill
+│   ├── [1;36mios[0m
+│   │   ├── [1;36mDebug-iphonesimulator[0m
+│   │   │   ├── [1;36mApp.framework[0m
+│   │   │   │   ├── [31mApp[0m
+│   │   │   │   ├── Info.plist
+│   │   │   │   ├── [1;36m_CodeSignature[0m
+│   │   │   │   │   └── CodeResources
+│   │   │   │   └── [1;36mflutter_assets[0m
+│   │   │   │       ├── AssetManifest.bin
+│   │   │   │       ├── AssetManifest.json
+│   │   │   │       ├── FontManifest.json
+│   │   │   │       ├── NOTICES.Z
+│   │   │   │       ├── [1;36mfonts[0m
+│   │   │   │       │   └── MaterialIcons-Regular.otf
+│   │   │   │       ├── isolate_snapshot_data
+│   │   │   │       ├── kernel_blob.bin
+│   │   │   │       ├── [1;36mpackages[0m
+│   │   │   │       │   └── [1;36mcupertino_icons[0m
+│   │   │   │       │       └── [1;36massets[0m
+│   │   │   │       │           └── CupertinoIcons.ttf
+│   │   │   │       ├── [1;36mshaders[0m
+│   │   │   │       │   └── ink_sparkle.frag
+│   │   │   │       └── vm_snapshot_data
+│   │   │   ├── [1;36mFlutter.framework[0m
+│   │   │   │   ├── Flutter
+│   │   │   │   ├── [1;36mHeaders[0m
+│   │   │   │   │   ├── Flutter.h
+│   │   │   │   │   ├── FlutterAppDelegate.h
+│   │   │   │   │   ├── FlutterBinaryMessenger.h
+│   │   │   │   │   ├── FlutterCallbackCache.h
+│   │   │   │   │   ├── FlutterChannels.h
+│   │   │   │   │   ├── FlutterCodecs.h
+│   │   │   │   │   ├── FlutterDartProject.h
+│   │   │   │   │   ├── FlutterEngine.h
+│   │   │   │   │   ├── FlutterEngineGroup.h
+│   │   │   │   │   ├── FlutterHeadlessDartRunner.h
+│   │   │   │   │   ├── FlutterMacros.h
+│   │   │   │   │   ├── FlutterPlatformViews.h
+│   │   │   │   │   ├── FlutterPlugin.h
+│   │   │   │   │   ├── FlutterPluginAppLifeCycleDelegate.h
+│   │   │   │   │   ├── FlutterTexture.h
+│   │   │   │   │   └── FlutterViewController.h
+│   │   │   │   ├── Info.plist
+│   │   │   │   ├── [1;36mModules[0m
+│   │   │   │   │   └── module.modulemap
+│   │   │   │   ├── PrivacyInfo.xcprivacy
+│   │   │   │   ├── [1;36m_CodeSignature[0m
+│   │   │   │   │   └── CodeResources
+│   │   │   │   └── icudtl.dat
+│   │   │   ├── [1;36mRunner.app[0m
+│   │   │   │   ├── AppFrameworkInfo.plist
+│   │   │   │   ├── AppIcon60x60@2x.png
+│   │   │   │   ├── AppIcon76x76@2x~ipad.png
+│   │   │   │   ├── Assets.car
+│   │   │   │   ├── [1;36mBase.lproj[0m
+│   │   │   │   │   ├── [1;36mLaunchScreen.storyboardc[0m
+│   │   │   │   │   │   ├── 01J-lp-oVM-view-Ze5-6b-2t3.nib
+│   │   │   │   │   │   ├── Info.plist
+│   │   │   │   │   │   └── UIViewController-01J-lp-oVM.nib
+│   │   │   │   │   └── [1;36mMain.storyboardc[0m
+│   │   │   │   │       ├── BYZ-38-t0r-view-8bC-Xf-vdC.nib
+│   │   │   │   │       ├── Info.plist
+│   │   │   │   │       └── UIViewController-BYZ-38-t0r.nib
+│   │   │   │   ├── [1;36mFrameworks[0m
+│   │   │   │   │   ├── [1;36mApp.framework[0m
+│   │   │   │   │   │   ├── [31mApp[0m
+│   │   │   │   │   │   ├── Info.plist
+│   │   │   │   │   │   ├── [1;36m_CodeSignature[0m
+│   │   │   │   │   │   │   └── CodeResources
+│   │   │   │   │   │   └── [1;36mflutter_assets[0m
+│   │   │   │   │   │       ├── AssetManifest.bin
+│   │   │   │   │   │       ├── AssetManifest.json
+│   │   │   │   │   │       ├── FontManifest.json
+│   │   │   │   │   │       ├── NOTICES.Z
+│   │   │   │   │   │       ├── [1;36mfonts[0m
+│   │   │   │   │   │       │   └── MaterialIcons-Regular.otf
+│   │   │   │   │   │       ├── isolate_snapshot_data
+│   │   │   │   │   │       ├── kernel_blob.bin
+│   │   │   │   │   │       ├── [1;36mpackages[0m
+│   │   │   │   │   │       │   └── [1;36mcupertino_icons[0m
+│   │   │   │   │   │       │       └── [1;36massets[0m
+│   │   │   │   │   │       │           └── CupertinoIcons.ttf
+│   │   │   │   │   │       ├── [1;36mshaders[0m
+│   │   │   │   │   │       │   └── ink_sparkle.frag
+│   │   │   │   │   │       └── vm_snapshot_data
+│   │   │   │   │   └── [1;36mFlutter.framework[0m
+│   │   │   │   │       ├── Flutter
+│   │   │   │   │       ├── [1;36mHeaders[0m
+│   │   │   │   │       │   ├── Flutter.h
+│   │   │   │   │       │   ├── FlutterAppDelegate.h
+│   │   │   │   │       │   ├── FlutterBinaryMessenger.h
+│   │   │   │   │       │   ├── FlutterCallbackCache.h
+│   │   │   │   │       │   ├── FlutterChannels.h
+│   │   │   │   │       │   ├── FlutterCodecs.h
+│   │   │   │   │       │   ├── FlutterDartProject.h
+│   │   │   │   │       │   ├── FlutterEngine.h
+│   │   │   │   │       │   ├── FlutterEngineGroup.h
+│   │   │   │   │       │   ├── FlutterHeadlessDartRunner.h
+│   │   │   │   │       │   ├── FlutterMacros.h
+│   │   │   │   │       │   ├── FlutterPlatformViews.h
+│   │   │   │   │       │   ├── FlutterPlugin.h
+│   │   │   │   │       │   ├── FlutterPluginAppLifeCycleDelegate.h
+│   │   │   │   │       │   ├── FlutterTexture.h
+│   │   │   │   │       │   └── FlutterViewController.h
+│   │   │   │   │       ├── Info.plist
+│   │   │   │   │       ├── [1;36mModules[0m
+│   │   │   │   │       │   └── module.modulemap
+│   │   │   │   │       ├── PrivacyInfo.xcprivacy
+│   │   │   │   │       ├── [1;36m_CodeSignature[0m
+│   │   │   │   │       │   └── CodeResources
+│   │   │   │   │       └── icudtl.dat
+│   │   │   │   ├── Info.plist
+│   │   │   │   ├── PkgInfo
+│   │   │   │   ├── [31mRunner[0m
+│   │   │   │   └── [1;36m_CodeSignature[0m
+│   │   │   │       └── CodeResources
+│   │   │   └── [1;36mRunner.swiftmodule[0m
+│   │   │       ├── [1;36mProject[0m
+│   │   │       │   └── arm64-apple-ios-simulator.swiftsourceinfo
+│   │   │       ├── arm64-apple-ios-simulator.abi.json
+│   │   │       ├── arm64-apple-ios-simulator.swiftdoc
+│   │   │       └── arm64-apple-ios-simulator.swiftmodule
+│   │   └── [1;36miphonesimulator[0m
+│   │       └── [1;36mRunner.app[0m
+│   │           ├── AppFrameworkInfo.plist
+│   │           ├── AppIcon60x60@2x.png
+│   │           ├── AppIcon76x76@2x~ipad.png
+│   │           ├── Assets.car
+│   │           ├── [1;36mBase.lproj[0m
+│   │           │   ├── [1;36mLaunchScreen.storyboardc[0m
+│   │           │   │   ├── 01J-lp-oVM-view-Ze5-6b-2t3.nib
+│   │           │   │   ├── Info.plist
+│   │           │   │   └── UIViewController-01J-lp-oVM.nib
+│   │           │   └── [1;36mMain.storyboardc[0m
+│   │           │       ├── BYZ-38-t0r-view-8bC-Xf-vdC.nib
+│   │           │       ├── Info.plist
+│   │           │       └── UIViewController-BYZ-38-t0r.nib
+│   │           ├── [1;36mFrameworks[0m
+│   │           │   ├── [1;36mApp.framework[0m
+│   │           │   │   ├── [31mApp[0m
+│   │           │   │   ├── Info.plist
+│   │           │   │   ├── [1;36m_CodeSignature[0m
+│   │           │   │   │   └── CodeResources
+│   │           │   │   └── [1;36mflutter_assets[0m
+│   │           │   │       ├── AssetManifest.bin
+│   │           │   │       ├── AssetManifest.json
+│   │           │   │       ├── FontManifest.json
+│   │           │   │       ├── NOTICES.Z
+│   │           │   │       ├── [1;36mfonts[0m
+│   │           │   │       │   └── MaterialIcons-Regular.otf
+│   │           │   │       ├── isolate_snapshot_data
+│   │           │   │       ├── kernel_blob.bin
+│   │           │   │       ├── [1;36mpackages[0m
+│   │           │   │       │   └── [1;36mcupertino_icons[0m
+│   │           │   │       │       └── [1;36massets[0m
+│   │           │   │       │           └── CupertinoIcons.ttf
+│   │           │   │       ├── [1;36mshaders[0m
+│   │           │   │       │   └── ink_sparkle.frag
+│   │           │   │       └── vm_snapshot_data
+│   │           │   └── [1;36mFlutter.framework[0m
+│   │           │       ├── Flutter
+│   │           │       ├── [1;36mHeaders[0m
+│   │           │       │   ├── Flutter.h
+│   │           │       │   ├── FlutterAppDelegate.h
+│   │           │       │   ├── FlutterBinaryMessenger.h
+│   │           │       │   ├── FlutterCallbackCache.h
+│   │           │       │   ├── FlutterChannels.h
+│   │           │       │   ├── FlutterCodecs.h
+│   │           │       │   ├── FlutterDartProject.h
+│   │           │       │   ├── FlutterEngine.h
+│   │           │       │   ├── FlutterEngineGroup.h
+│   │           │       │   ├── FlutterHeadlessDartRunner.h
+│   │           │       │   ├── FlutterMacros.h
+│   │           │       │   ├── FlutterPlatformViews.h
+│   │           │       │   ├── FlutterPlugin.h
+│   │           │       │   ├── FlutterPluginAppLifeCycleDelegate.h
+│   │           │       │   ├── FlutterTexture.h
+│   │           │       │   └── FlutterViewController.h
+│   │           │       ├── Info.plist
+│   │           │       ├── [1;36mModules[0m
+│   │           │       │   └── module.modulemap
+│   │           │       ├── PrivacyInfo.xcprivacy
+│   │           │       ├── [1;36m_CodeSignature[0m
+│   │           │       │   └── CodeResources
+│   │           │       └── icudtl.dat
+│   │           ├── Info.plist
+│   │           ├── PkgInfo
+│   │           ├── [31mRunner[0m
+│   │           └── [1;36m_CodeSignature[0m
+│   │               └── CodeResources
+│   └── last_build_run.json
+├── [1;36mios[0m
+│   ├── [1;36mFlutter[0m
+│   │   ├── AppFrameworkInfo.plist
+│   │   ├── Debug.xcconfig
+│   │   ├── Generated.xcconfig
+│   │   ├── Release.xcconfig
+│   │   └── [31mflutter_export_environment.sh[0m
+│   ├── [1;36mRunner[0m
+│   │   ├── AppDelegate.swift
+│   │   ├── [1;36mAssets.xcassets[0m
+│   │   │   ├── [1;36mAppIcon.appiconset[0m
+│   │   │   │   ├── Contents.json
+│   │   │   │   ├── Icon-App-1024x1024@1x.png
+│   │   │   │   ├── Icon-App-20x20@1x.png
+│   │   │   │   ├── Icon-App-20x20@2x.png
+│   │   │   │   ├── Icon-App-20x20@3x.png
+│   │   │   │   ├── Icon-App-29x29@1x.png
+│   │   │   │   ├── Icon-App-29x29@2x.png
+│   │   │   │   ├── Icon-App-29x29@3x.png
+│   │   │   │   ├── Icon-App-40x40@1x.png
+│   │   │   │   ├── Icon-App-40x40@2x.png
+│   │   │   │   ├── Icon-App-40x40@3x.png
+│   │   │   │   ├── Icon-App-60x60@2x.png
+│   │   │   │   ├── Icon-App-60x60@3x.png
+│   │   │   │   ├── Icon-App-76x76@1x.png
+│   │   │   │   ├── Icon-App-76x76@2x.png
+│   │   │   │   └── Icon-App-83.5x83.5@2x.png
+│   │   │   └── [1;36mLaunchImage.imageset[0m
+│   │   │       ├── Contents.json
+│   │   │       ├── LaunchImage.png
+│   │   │       ├── LaunchImage@2x.png
+│   │   │       ├── LaunchImage@3x.png
+│   │   │       └── README.md
+│   │   ├── [1;36mBase.lproj[0m
+│   │   │   ├── LaunchScreen.storyboard
+│   │   │   └── Main.storyboard
+│   │   ├── GeneratedPluginRegistrant.h
+│   │   ├── GeneratedPluginRegistrant.m
+│   │   ├── Info.plist
+│   │   └── Runner-Bridging-Header.h
+│   ├── [1;36mRunner.xcodeproj[0m
+│   │   ├── project.pbxproj
+│   │   ├── [1;36mproject.xcworkspace[0m
+│   │   │   ├── contents.xcworkspacedata
+│   │   │   └── [1;36mxcshareddata[0m
+│   │   │       ├── IDEWorkspaceChecks.plist
+│   │   │       ├── WorkspaceSettings.xcsettings
+│   │   │       └── [1;36mswiftpm[0m
+│   │   │           └── [1;36mconfiguration[0m
+│   │   └── [1;36mxcshareddata[0m
+│   │       └── [1;36mxcschemes[0m
+│   │           └── Runner.xcscheme
+│   ├── [1;36mRunner.xcworkspace[0m
+│   │   ├── contents.xcworkspacedata
+│   │   └── [1;36mxcshareddata[0m
+│   │       ├── IDEWorkspaceChecks.plist
+│   │       ├── WorkspaceSettings.xcsettings
+│   │       └── [1;36mswiftpm[0m
+│   │           └── [1;36mconfiguration[0m
+│   └── [1;36mRunnerTests[0m
+│       └── RunnerTests.swift
+├── kib_theme_switcher.iml
+├── [1;36mlib[0m
+│   ├── common_export.dart
+│   ├── [1;36mget_it[0m
+│   │   ├── export.dart
+│   │   └── setup.dart
+│   ├── main.dart
+│   ├── [1;36mscreens[0m
+│   │   ├── export.dart
+│   │   └── home.dart
+│   └── [1;36mutils[0m
+│       └── [1;36mtheme[0m
+│           ├── app_colors.dart
+│           ├── app_theme.dart
+│           ├── export.dart
+│           └── theme_service.dart
+├── lib-tree.txt
+├── pubspec.lock
+├── pubspec.yaml
+├── [1;36mtest[0m
+│   └── widget_test.dart
+└── [1;36mweb[0m
+    ├── favicon.png
+    ├── [1;36micons[0m
+    │   ├── Icon-192.png
+    │   ├── Icon-512.png
+    │   ├── Icon-maskable-192.png
+    │   └── Icon-maskable-512.png
+    ├── index.html
+    └── manifest.json
 
-5 directories, 10 files
+109 directories, 232 files

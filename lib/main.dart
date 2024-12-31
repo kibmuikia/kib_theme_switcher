@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:kib_theme_switcher/common_export.dart'
     show MyHomePage, ThemeService, getIt, setupServiceLocator;
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize service locator
-  setupServiceLocator();
+  await setupServiceLocator();
 
   runApp(const MyApp());
 }
@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       valueListenable: themeService.themeNotifier,
       builder: (context, theme, _) {
         return MaterialApp(
+          debugShowCheckedModeBanner: kDebugMode,
           title: 'Kib Switcher',
           theme: theme,
           home: const MyHomePage(title: 'The Switcharoo'),

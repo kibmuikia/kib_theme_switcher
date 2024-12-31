@@ -92,6 +92,12 @@ final themeService = GetIt.I<ThemeService>();
 themeService.toggleTheme();
 ```
 
+## Previews
+### light
+![Light Theme Preview](assets/images/light-theme.png)
+### dark
+![Dark Theme Preview](assets/images/dark-theme.png)
+
 ## Contributing
 
 1. Fork the repository
