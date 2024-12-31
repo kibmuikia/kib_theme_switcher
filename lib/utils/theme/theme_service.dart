@@ -24,7 +24,7 @@ class ThemeService {
   Future<void> _initTheme() async {
     try {
       // Get the saved theme mode from database
-      final savedThemeMode = await databaseService.getCurrentThemeMode();
+      final savedThemeMode = await databaseService.themeModeDao.getCurrentThemeMode();
       _isDarkMode = savedThemeMode?.mode == 'dark';
       final initialTheme = savedThemeMode?.mode == 'dark'
           ? AppTheme().darkTheme
@@ -43,7 +43,7 @@ class ThemeService {
       _isDarkMode = !_isDarkMode;
       _themeController.value = _isDarkMode ? AppTheme().darkTheme : AppTheme().lightTheme;
       // Save to database
-      await databaseService.saveThemeMode(_isDarkMode ? 'dark' : 'light');
+      await databaseService.themeModeDao.saveThemeMode(_isDarkMode ? 'dark' : 'light');
     } on Exception catch (e, trace) {
       debugPrint('** ThemeService:toggleTheme: $e *');
     }
@@ -56,7 +56,7 @@ class ThemeService {
         _isDarkMode = darkMode;
         _themeController.value = _isDarkMode ? AppTheme().darkTheme : AppTheme().lightTheme;
         // Save to database
-        await databaseService.saveThemeMode(_isDarkMode ? 'dark' : 'light');
+        await databaseService.themeModeDao.saveThemeMode(_isDarkMode ? 'dark' : 'light');
       }
     } on Exception catch (e, trace) {
       debugPrint('** ThemeService:setThemeMode: darkMode[$darkMode] $e *');
