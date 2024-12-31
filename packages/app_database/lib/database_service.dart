@@ -1,7 +1,7 @@
 import 'package:app_database/dao/export.dart';
 import 'package:app_database/models/export.dart';
 import 'package:app_database/objectbox.g.dart';
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
@@ -39,7 +39,7 @@ class DatabaseService {
 
     _store = await openStore(directory: dbDirectory);
 
-    if (Admin.isAvailable()) {
+    if (kDebugMode && Admin.isAvailable()) {
       _admin = Admin(_store);
     }
 
