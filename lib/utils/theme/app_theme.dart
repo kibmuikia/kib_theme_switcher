@@ -51,10 +51,8 @@ class AppTheme {
         onSecondary: colors['onSecondary']!,
         error: colors['error']!,
         onError: colors['onError']!,
-        background: colors['background']!,
-        onBackground: colors['onBackground']!,
-        surface: colors['surface']!,
-        onSurface: colors['onSurface']!,
+        surface: colors['background'/*'surface'*/]!,
+        onSurface: colors['onBackground'/*'onSurface'*/]!,
       ),
 
       // Component themes
