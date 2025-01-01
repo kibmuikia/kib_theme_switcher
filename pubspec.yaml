@@ -39,6 +39,8 @@ dependencies:
   get_it: ^8.0.3
   app_database:
     path: packages/app_database
+  app_http:
+    path: packages/app_http
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:app_http/app_http.dart' show ServerService, ApiConstants;
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -19,7 +20,8 @@ import 'package:flutter/material.dart'
         StatefulWidget,
         Text,
         Theme,
-        Widget;
+        Widget,
+        debugPrint;
 import 'package:kib_theme_switcher/common_export.dart' show ThemeService, getIt;
 
 class MyHomePage extends StatefulWidget {
@@ -34,6 +36,26 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final _themeService = getIt<ThemeService>();
+  final _serverService = getIt<ServerService>();
+
+  @override
+  void initState() {
+    super.initState();
+    () async {
+      _serverService
+          .get<Map<String, dynamic>>(
+        '${ApiConstants.v1}${ApiConstants.users}',
+      )
+          .then(
+        (response) {
+          debugPrint('** MyHomePage:initState: response[ $response ] *');
+        },
+        onError: (e) {
+          debugPrint('** MyHomePage:initState: error[ $e ] *');
+        },
+      );
+    }();
+  }
 
   void _incrementCounter() {
     setState(() {
