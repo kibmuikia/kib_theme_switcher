@@ -85,7 +85,7 @@ class HttpValidator {
         case 504:
           return 'Gateway Timeout';
         default:
-          return 'Unknown Status Code';
+          return 'Unknown Status Code ($status)';
       }
     } on Exception catch (e) {
       return kDebugMode ? 'Error: $e' : 'Error Encountered';
