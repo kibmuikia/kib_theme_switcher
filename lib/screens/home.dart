@@ -1,5 +1,4 @@
-import 'package:app_http/app_http.dart'
-    show ApiConstants, ApiPath, ServerService;
+import 'package:app_http/app_http.dart' show ServerService, UserEndpoints;
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -43,9 +42,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     () async {
+      final String path = UserEndpoints.userPosts.withParams({'userId': '123'});
       _serverService.get<Map<String, dynamic>>(
-        ApiPath.postById('123').build(),
-        // sample_result:  https://api.dev.example.com/v1/posts/123?test=jumping_jack
+        path,
         queryParameters: {"test": "jumping_jack"},
       ).then(
         (response) {
