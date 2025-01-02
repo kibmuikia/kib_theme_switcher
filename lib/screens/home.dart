@@ -1,4 +1,5 @@
-import 'package:app_http/app_http.dart' show ServerService, ApiConstants;
+import 'package:app_http/app_http.dart'
+    show ApiConstants, ApiPath, ServerService;
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -42,11 +43,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     () async {
-      _serverService
-          .get<Map<String, dynamic>>(
-        '${ApiConstants.v1}${ApiConstants.users}',
-      )
-          .then(
+      _serverService.get<Map<String, dynamic>>(
+        ApiPath.postById('123').build(),
+        // sample_result:  https://api.dev.example.com/v1/posts/123?test=jumping_jack
+        queryParameters: {"test": "jumping_jack"},
+      ).then(
         (response) {
           debugPrint('** MyHomePage:initState: response[ $response ] *');
         },
