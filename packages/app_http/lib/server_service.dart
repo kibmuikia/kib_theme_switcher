@@ -1,14 +1,42 @@
 import 'package:app_http/utils/export.dart'
     show ApiConstants, ApiResponse, ApiError, HttpValidator;
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+/// A service class that handles HTTP requests using Dio client.
+///
+/// Provides a robust HTTP client service with:
+/// - Environment-specific configurations (development/production)
+/// - Built-in error handling and standardized API responses
+/// - Optional request/response logging
+/// - Progress tracking for uploads and downloads
+/// - Support for all standard HTTP methods (GET, POST, PUT, PATCH, DELETE)
+///
+/// Usage:
+/// ```dart
+/// // Create instance for development with logging
+/// final service = ServerService.development(enableLogging: true);
+///
+/// // Make requests
+/// final response = await service.get<Map<String, dynamic>>('/users');
+/// ```
 class ServerService {
   final Dio _dio;
+
+  /// Whether to enable detailed request/response logging.
   final bool enableLogging;
 
-  /// Private constructor to prevent direct instantiation
+  /// Private constructor to prevent direct instantiation.
+  ///
+  /// Creates a configured Dio instance with:
+  /// - Base URL configuration
+  /// - Timeout settings from [ApiConstants]
+  /// - Status validation
+  /// - Optional logging interceptor
+  ///
+  /// Parameters:
+  /// - [baseUrl]: The base URL for all requests
+  /// - [enableLogging]: Whether to enable request/response logging
   ServerService._({
     required String baseUrl,
     this.enableLogging = false,
@@ -35,7 +63,13 @@ class ServerService {
     }
   }
 
-  /// Factory constructor for development environment
+  /// Creates a ServerService instance configured for development environment.
+  ///
+  /// Parameters:
+  /// - [enableLogging]: Whether to enable request/response logging (defaults to false)
+  ///
+  /// Returns a new [ServerService] instance with development base URL.
+  /// Note: This is a factory constructor for development environment
   factory ServerService.development({bool enableLogging = false}) {
     return ServerService._(
       baseUrl: ApiConstants.baseUrlDev,
@@ -43,7 +77,13 @@ class ServerService {
     );
   }
 
-  /// Factory constructor for production environment
+  /// Creates a ServerService instance configured for production environment.
+  ///
+  /// Parameters:
+  /// - [enableLogging]: Whether to enable request/response logging (defaults to false)
+  ///
+  /// Returns a new [ServerService] instance with production base URL.
+  /// Note: This is a factory constructor for production environment
   factory ServerService.production({bool enableLogging = false}) {
     return ServerService._(
       baseUrl: ApiConstants.baseUrlProd,
@@ -52,11 +92,24 @@ class ServerService {
   }
 
   /// Generic GET request
+  /// Performs a GET request to the specified path.
+  ///
+  /// Parameters:
+  /// - [path]: The URL path to request
+  /// - [queryParameters]: Optional query parameters to append to URL
+  /// - [options]: Optional Dio request options
+  /// - [cancelToken]: Optional token for cancelling the request
+  /// - [onReceiveProgress]: Optional callback for tracking download progress
+  ///
+  /// Returns an [ApiResponse<T>] with the response data.
+  ///
+  /// Throws [ApiError] if the request fails.
   Future<ApiResponse<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
+    void Function(int, int)? onReceiveProgress,
   }) async {
     try {
       final response = await _dio.get<T>(
@@ -64,13 +117,13 @@ class ServerService {
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,
-        onReceiveProgress: (i, o) {
-          debugPrint(
-              '** ServerService:get:onReceiveProgress:[$path]: i[ $i ] o[ $o ] *');
-        },
+        onReceiveProgress: onReceiveProgress == null
+            ? null
+            : (i, o) => onReceiveProgress(i, o),
       );
 
       return ApiResponse.success(
+        url: path,
         data: response.data,
         statusCode: response.statusCode,
       );
@@ -82,12 +135,28 @@ class ServerService {
   }
 
   /// Generic POST request
+  /// Performs a POST request to the specified path.
+  ///
+  /// Parameters:
+  /// - [path]: The URL path to request
+  /// - [data]: The data to send in request body
+  /// - [queryParameters]: Optional query parameters to append to URL
+  /// - [options]: Optional Dio request options
+  /// - [cancelToken]: Optional token for cancelling the request
+  /// - [onSendProgress]: Optional callback for tracking upload progress
+  /// - [onReceiveProgress]: Optional callback for tracking download progress
+  ///
+  /// Returns an [ApiResponse<T>] with the response data.
+  ///
+  /// Throws [ApiError] if the request fails.
   Future<ApiResponse<T>> post<T>(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
+    void Function(int, int)? onSendProgress,
+    void Function(int, int)? onReceiveProgress,
   }) async {
     try {
       final response = await _dio.post<T>(
@@ -96,17 +165,15 @@ class ServerService {
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,
-        onSendProgress: (i, o) {
-          debugPrint(
-              '** ServerService:post:onSendProgress:[$path]: i[ $i ] o[ $o ] *');
-        },
-        onReceiveProgress: (i, o) {
-          debugPrint(
-              '** ServerService:post:onReceiveProgress:[$path]: i[ $i ] o[ $o ] *');
-        },
+        onSendProgress:
+            onSendProgress == null ? null : (i, o) => onSendProgress(i, o),
+        onReceiveProgress: onReceiveProgress == null
+            ? null
+            : (i, o) => onReceiveProgress(i, o),
       );
 
       return ApiResponse.success(
+        url: path,
         data: response.data,
         statusCode: response.statusCode,
       );
@@ -118,12 +185,28 @@ class ServerService {
   }
 
   /// Generic PUT request
+  /// Performs a PUT request to the specified path.
+  ///
+  /// Parameters:
+  /// - [path]: The URL path to request
+  /// - [data]: The data to send in request body
+  /// - [queryParameters]: Optional query parameters to append to URL
+  /// - [options]: Optional Dio request options
+  /// - [cancelToken]: Optional token for cancelling the request
+  /// - [onSendProgress]: Optional callback for tracking upload progress
+  /// - [onReceiveProgress]: Optional callback for tracking download progress
+  ///
+  /// Returns an [ApiResponse<T>] with the response data.
+  ///
+  /// Throws [ApiError] if the request fails.
   Future<ApiResponse<T>> put<T>(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
+    void Function(int, int)? onSendProgress,
+    void Function(int, int)? onReceiveProgress,
   }) async {
     try {
       final response = await _dio.put<T>(
@@ -132,9 +215,15 @@ class ServerService {
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,
+        onSendProgress:
+            onSendProgress != null ? (i, o) => onSendProgress(i, o) : null,
+        onReceiveProgress: onReceiveProgress != null
+            ? (i, o) => onReceiveProgress(i, o)
+            : null,
       );
 
       return ApiResponse.success(
+        url: path,
         data: response.data,
         statusCode: response.statusCode,
       );
@@ -146,12 +235,28 @@ class ServerService {
   }
 
   /// Generic PATCH request
+  /// Performs a PATCH request to the specified path.
+  ///
+  /// Parameters:
+  /// - [path]: The URL path to request
+  /// - [data]: The data to send in request body
+  /// - [queryParameters]: Optional query parameters to append to URL
+  /// - [options]: Optional Dio request options
+  /// - [cancelToken]: Optional token for cancelling the request
+  /// - [onSendProgress]: Optional callback for tracking upload progress
+  /// - [onReceiveProgress]: Optional callback for tracking download progress
+  ///
+  /// Returns an [ApiResponse<T>] with the response data.
+  ///
+  /// Throws [ApiError] if the request fails.
   Future<ApiResponse<T>> patch<T>(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
+    void Function(int, int)? onSendProgress,
+    void Function(int, int)? onReceiveProgress,
   }) async {
     try {
       final response = await _dio.patch<T>(
@@ -160,9 +265,15 @@ class ServerService {
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,
+        onSendProgress:
+            onSendProgress != null ? (i, o) => onSendProgress(i, o) : null,
+        onReceiveProgress: onReceiveProgress != null
+            ? (i, o) => onReceiveProgress(i, o)
+            : null,
       );
 
       return ApiResponse.success(
+        url: path,
         data: response.data,
         statusCode: response.statusCode,
       );
@@ -174,6 +285,18 @@ class ServerService {
   }
 
   /// Generic DELETE request
+  /// Performs a DELETE request to the specified path.
+  ///
+  /// Parameters:
+  /// - [path]: The URL path to request
+  /// - [data]: Optional data to send in request body
+  /// - [queryParameters]: Optional query parameters to append to URL
+  /// - [options]: Optional Dio request options
+  /// - [cancelToken]: Optional token for cancelling the request
+  ///
+  /// Returns an [ApiResponse<T>] with the response data.
+  ///
+  /// Throws [ApiError] if the request fails.
   Future<ApiResponse<T>> delete<T>(
     String path, {
     dynamic data,
@@ -191,6 +314,7 @@ class ServerService {
       );
 
       return ApiResponse.success(
+        url: path,
         data: response.data,
         statusCode: response.statusCode,
       );
@@ -201,7 +325,14 @@ class ServerService {
     }
   }
 
-  /// Handle Dio errors and convert them to ApiError
+  /// Handles Dio errors and converts them to [ApiError] instances.
+  ///
+  /// Parameters:
+  /// - [url]: The request URL that generated the error
+  /// - [error]: The original Dio error
+  ///
+  /// Returns an [ApiError] with appropriate error details based on the error type.
+  /// Handles timeout, bad response, cancellation and other error cases.
   ApiError _handleDioError(String url, DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
