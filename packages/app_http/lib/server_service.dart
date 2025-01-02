@@ -1,7 +1,8 @@
 import 'package:app_http/utils/export.dart'
-    show ApiConstants, ApiResponse, ApiError, HttpValidator;
+    show ApiConstants, ApiError, ApiResponse, HttpValidator, RetryOptions;
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 
 /// A service class that handles HTTP requests using Dio client.
 ///
@@ -26,6 +27,9 @@ class ServerService {
   /// Whether to enable detailed request/response logging.
   final bool enableLogging;
 
+  /// Whether retry mechanism is enabled
+  final bool enableRetry;
+
   /// Private constructor to prevent direct instantiation.
   ///
   /// Creates a configured Dio instance with:
@@ -40,7 +44,9 @@ class ServerService {
   ServerService._({
     required String baseUrl,
     this.enableLogging = false,
+    this.enableRetry = false,
     Map<String, dynamic>? headers,
+    RetryOptions? retryOptions,
   }) : _dio = Dio(
           BaseOptions(
             baseUrl: baseUrl,
@@ -66,22 +72,48 @@ class ServerService {
         ),
       );
     }
+    // Add retry interceptor if enabled
+    if (enableRetry) {
+      _dio.interceptors.add(
+        RetryInterceptor(
+          dio: _dio,
+          logPrint: enableLogging ? print : null,
+          // Use custom retry options if provided, otherwise use defaults
+          retries: retryOptions?.retries ?? 3,
+          retryDelays: retryOptions?.retryDelays ??
+              const [
+                Duration(seconds: 1),
+                Duration(seconds: 2),
+                Duration(seconds: 3),
+              ],
+          retryEvaluator: retryOptions?.retryEvaluator,
+          retryableExtraStatuses:
+              retryOptions?.retryableExtraStatuses ?? const {},
+        ),
+      );
+    }
   }
 
   /// Creates a ServerService instance configured for development environment.
   ///
   /// Parameters:
   /// - [enableLogging]: Whether to enable request/response logging (defaults to false)
+  /// - [enableRetry]: Whether to enable retry mechanism (defaults to false)
+  /// - [retryOptions]: Optional custom retry configuration
   ///
   /// Returns a new [ServerService] instance with development base URL.
   /// Note: This is a factory constructor for development environment
   factory ServerService.development({
     bool enableLogging = false,
+    bool enableRetry = false,
+    RetryOptions? retryOptions,
     Map<String, dynamic>? headers,
   }) {
     return ServerService._(
       baseUrl: ApiConstants.baseUrlDev,
       enableLogging: enableLogging,
+      enableRetry: enableRetry,
+      retryOptions: retryOptions,
       headers: headers,
     );
   }
@@ -90,16 +122,22 @@ class ServerService {
   ///
   /// Parameters:
   /// - [enableLogging]: Whether to enable request/response logging (defaults to false)
+  /// - [enableRetry]: Whether to enable retry mechanism (defaults to false)
+  /// - [retryOptions]: Optional custom retry configuration
   ///
   /// Returns a new [ServerService] instance with production base URL.
   /// Note: This is a factory constructor for production environment
   factory ServerService.production({
     bool enableLogging = false,
+    bool enableRetry = false,
+    RetryOptions? retryOptions,
     Map<String, dynamic>? headers,
   }) {
     return ServerService._(
       baseUrl: ApiConstants.baseUrlProd,
       enableLogging: enableLogging,
+      enableRetry: enableRetry,
+      retryOptions: retryOptions,
       headers: headers,
     );
   }
@@ -133,7 +171,8 @@ class ServerService {
 
   /// Sets an authorization token in the headers
   void setAuthToken(String token) {
-    _dio.options.headers[ApiConstants.authorization] = '${ApiConstants.bearer} $token';
+    _dio.options.headers[ApiConstants.authorization] =
+        '${ApiConstants.bearer} $token';
   }
 
   /// Removes the authorization token from headers

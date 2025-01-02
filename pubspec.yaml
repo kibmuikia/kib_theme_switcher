@@ -53,6 +53,10 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
 
+dependency_overrides:
+  http_parser: ^4.1.1
+  collection: ^1.19.1
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
