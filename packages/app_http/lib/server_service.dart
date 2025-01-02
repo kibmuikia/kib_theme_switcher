@@ -40,6 +40,7 @@ class ServerService {
   ServerService._({
     required String baseUrl,
     this.enableLogging = false,
+    Map<String, dynamic>? headers,
   }) : _dio = Dio(
           BaseOptions(
             baseUrl: baseUrl,
@@ -47,6 +48,10 @@ class ServerService {
             receiveTimeout: ApiConstants.receiveTimeout,
             sendTimeout: ApiConstants.sendTimeout,
             validateStatus: (status) => HttpValidator.isValidStatus(status),
+            headers: headers,
+            queryParameters: null,
+            extra: null,
+            contentType: null,
           ),
         ) {
     if (enableLogging) {
@@ -70,10 +75,14 @@ class ServerService {
   ///
   /// Returns a new [ServerService] instance with development base URL.
   /// Note: This is a factory constructor for development environment
-  factory ServerService.development({bool enableLogging = false}) {
+  factory ServerService.development({
+    bool enableLogging = false,
+    Map<String, dynamic>? headers,
+  }) {
     return ServerService._(
       baseUrl: ApiConstants.baseUrlDev,
       enableLogging: enableLogging,
+      headers: headers,
     );
   }
 
@@ -84,11 +93,52 @@ class ServerService {
   ///
   /// Returns a new [ServerService] instance with production base URL.
   /// Note: This is a factory constructor for production environment
-  factory ServerService.production({bool enableLogging = false}) {
+  factory ServerService.production({
+    bool enableLogging = false,
+    Map<String, dynamic>? headers,
+  }) {
     return ServerService._(
       baseUrl: ApiConstants.baseUrlProd,
       enableLogging: enableLogging,
+      headers: headers,
     );
+  }
+
+  /// Gets the current headers
+  Map<String, dynamic> get headers => _dio.options.headers;
+
+  /// Sets default headers for all requests
+  /// This will override any existing headers
+  void setHeaders(Map<String, dynamic> headers) {
+    _dio.options.headers = headers;
+  }
+
+  /// Updates existing headers
+  /// This will merge new headers with existing ones
+  void updateHeaders(Map<String, dynamic> headers) {
+    _dio.options.headers.addAll(headers);
+  }
+
+  /// Removes specific headers by their keys
+  void removeHeaders(List<String> headerKeys) {
+    for (final key in headerKeys) {
+      _dio.options.headers.remove(key);
+    }
+  }
+
+  /// Clears all headers
+  void clearHeaders() {
+    _dio.options.headers.clear();
+  }
+
+  /// Sets an authorization token in the headers
+  void setAuthToken(String token) {
+    _dio.options.headers[ApiConstants.authorization] = '${ApiConstants.bearer} $token';
+  }
+
+  /// Removes the authorization token from headers
+  void removeAuthToken() {
+    _dio.options.headers.remove(ApiConstants.authorization);
   }
 
   /// Generic GET request
