@@ -75,9 +75,9 @@ class ServerService {
         statusCode: response.statusCode,
       );
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleDioError(path, e);
     } catch (e) {
-      throw ApiError(message: e.toString());
+      throw ApiError(url: path, message: e.toString());
     }
   }
 
@@ -111,9 +111,9 @@ class ServerService {
         statusCode: response.statusCode,
       );
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleDioError(path, e);
     } catch (e) {
-      throw ApiError(message: e.toString());
+      throw ApiError(url: path, message: e.toString());
     }
   }
 
@@ -139,9 +139,9 @@ class ServerService {
         statusCode: response.statusCode,
       );
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw _handleDioError(path, e);
     } catch (e) {
-      throw ApiError(message: e.toString());
+      throw ApiError(url: path, message: e.toString());
     }
   }
 
@@ -167,9 +167,9 @@ class ServerService {
         statusCode: response.statusCode,
       );
     } on DioException catch (e) {
-      throw _handleDioError(e);
-    } catch (e) {
-      throw ApiError(message: e.toString());
+      throw _handleDioError(path, e);
+    } on Exception catch (e, trace) {
+      throw ApiError(url: path, message: e.toString(), error: trace);
     }
   }
 
@@ -195,37 +195,41 @@ class ServerService {
         statusCode: response.statusCode,
       );
     } on DioException catch (e) {
-      throw _handleDioError(e);
-    } catch (e) {
-      throw ApiError(message: e.toString());
+      throw _handleDioError(path, e);
+    } on Exception catch (e, trace) {
+      throw ApiError(url: path, message: e.toString(), error: trace);
     }
   }
 
   /// Handle Dio errors and convert them to ApiError
-  ApiError _handleDioError(DioException error) {
+  ApiError _handleDioError(String url, DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
         return ApiError(
+          url: url,
           message: 'Connection timed out',
           statusCode: error.response?.statusCode,
           error: error,
         );
       case DioExceptionType.badResponse:
         return ApiError(
+          url: url,
           message: error.response?.statusMessage ?? 'Bad response',
           statusCode: error.response?.statusCode,
           error: error.response?.data,
         );
       case DioExceptionType.cancel:
         return ApiError(
+          url: url,
           message: 'Request cancelled',
           statusCode: error.response?.statusCode,
           error: error,
         );
       default:
         return ApiError(
+          url: url,
           message: error.message ?? 'Something went wrong',
           statusCode: error.response?.statusCode,
           error: error,

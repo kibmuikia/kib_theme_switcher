@@ -1,7 +1,7 @@
 name: app_http
 description: "A Flutter package project to handle network request operations for application-kib_theme_switcher"
 version: 0.0.1
-homepage:
+homepage: https://github.com/kibmuikia/kib_theme_switcher
 
 environment:
   sdk: ^3.5.4

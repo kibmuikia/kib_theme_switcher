@@ -1,9 +1,11 @@
 class ApiError implements Exception {
+  final String url;
   final String message;
   final int? statusCode;
   final dynamic error;
 
   ApiError({
+    required this.url,
     required this.message,
     this.statusCode,
     this.error,
@@ -11,5 +13,5 @@ class ApiError implements Exception {
 
   @override
   String toString() =>
-      'ApiError(message: $message, statusCode: $statusCode, error: $error)';
+      'ApiError(url: $url, message: $message, statusCode: $statusCode, error: $error)';
 }
