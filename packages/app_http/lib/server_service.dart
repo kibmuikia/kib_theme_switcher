@@ -1,5 +1,5 @@
 import 'package:app_http/utils/export.dart'
-    show ApiConstants, ApiResponse, ApiError;
+    show ApiConstants, ApiResponse, ApiError, HttpValidator;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -18,7 +18,7 @@ class ServerService {
             connectTimeout: ApiConstants.connectionTimeout,
             receiveTimeout: ApiConstants.receiveTimeout,
             sendTimeout: ApiConstants.sendTimeout,
-            validateStatus: (status) => status != null && status < 500,
+            validateStatus: (status) => HttpValidator.isValidStatus(status),
           ),
         ) {
     if (enableLogging) {
@@ -65,7 +65,8 @@ class ServerService {
         options: options,
         cancelToken: cancelToken,
         onReceiveProgress: (i, o) {
-          debugPrint('** ServerService:get:onReceiveProgress:[$path]: i[ $i ] o[ $o ] *');
+          debugPrint(
+              '** ServerService:get:onReceiveProgress:[$path]: i[ $i ] o[ $o ] *');
         },
       );
 
@@ -96,10 +97,12 @@ class ServerService {
         options: options,
         cancelToken: cancelToken,
         onSendProgress: (i, o) {
-          debugPrint('** ServerService:post:onSendProgress:[$path]: i[ $i ] o[ $o ] *');
+          debugPrint(
+              '** ServerService:post:onSendProgress:[$path]: i[ $i ] o[ $o ] *');
         },
         onReceiveProgress: (i, o) {
-          debugPrint('** ServerService:post:onReceiveProgress:[$path]: i[ $i ] o[ $o ] *');
+          debugPrint(
+              '** ServerService:post:onReceiveProgress:[$path]: i[ $i ] o[ $o ] *');
         },
       );
 
@@ -144,12 +147,12 @@ class ServerService {
 
   /// Generic PATCH request
   Future<ApiResponse<T>> patch<T>(
-      String path, {
-        dynamic data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-      }) async {
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       final response = await _dio.patch<T>(
         path,
