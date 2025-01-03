@@ -13,20 +13,23 @@ class HttpValidator {
       if (status == null) return false;
 
       switch (status) {
-      // 2xx Success
+        // 2xx Success
         case >= 200 && < 300:
           return true;
 
-      // Specific status codes that need custom handling
+        // Specific status codes that need custom handling
         case 304: // Not Modified
-        case 401: // Unauthorized
-        case 403: // Forbidden
-        case 404: // Not Found
         case 409: // Conflict
         case 422: // Unprocessable Entity
           return true;
 
-      // All other status codes are considered invalid
+        // Unauthorized, Forbidden & Not Found
+        case 401:
+        case 403:
+        case 404:
+          return false;
+
+        // All other status codes are considered invalid
         default:
           return false;
       }
