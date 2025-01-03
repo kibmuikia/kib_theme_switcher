@@ -2,7 +2,7 @@ import 'package:app_database/dao/export.dart';
 import 'package:app_database/models/export.dart';
 import 'package:app_database/objectbox.g.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' show getApplicationDocumentsDirectory;
 import 'package:path/path.dart' as p;
 
 /// Service class to handle all database operations
@@ -23,6 +23,8 @@ class DatabaseService {
 
   /// Theme mode DAO
   late final ThemeModeDao themeModeDao;
+  /// User DAO
+  late final UserModelDao userModelDao;
 
   /// Initialize the database
   static Future<DatabaseService> create() async {
@@ -45,6 +47,7 @@ class DatabaseService {
 
     // Initialize DAOs
     themeModeDao = ThemeModeDao(_store.box<ThemeModeModel>());
+    userModelDao = UserModelDao(_store.box<UserModel>());
   }
 
   /// Close the database
