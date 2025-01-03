@@ -48,7 +48,13 @@ class _MyHomePageState extends State<MyHomePage> {
         queryParameters: {"test": "jumping_jack"},
       ).then(
         (response) {
-          debugPrint('** MyHomePage:initState: response[ $response ] *');
+          debugPrint('** MyHomePage:initState: $response');
+          switch (response.success) {
+            case true:
+              // TODO: Handle this case.
+            case false:
+              // TODO: Handle this case.
+          }
         },
         onError: (e) {
           debugPrint('** MyHomePage:initState: error[ $e ] *');

@@ -1,8 +1,16 @@
 import 'package:app_http/utils/export.dart'
-    show ApiConstants, ApiError, ApiResponse, HttpValidator, RetryOptions;
+    show
+        ApiConstants,
+        ApiError,
+        ApiResponse,
+        HttpValidator,
+        RetryOptions,
+        errorEncountered,
+        success;
 import 'package:dio/dio.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart' show RetryInterceptor;
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:pretty_dio_logger/pretty_dio_logger.dart' show PrettyDioLogger;
 
 /// A service class that handles HTTP requests using Dio client.
 ///
@@ -181,7 +189,7 @@ class ServerService {
   }
 
   /// Generic GET request
-  /// Performs a GET request to the specified path.
+  /// Performs a GET request to the specified path and returns a standardized [ApiResponse].
   ///
   /// Parameters:
   /// - [path]: The URL path to request
@@ -190,9 +198,12 @@ class ServerService {
   /// - [cancelToken]: Optional token for cancelling the request
   /// - [onReceiveProgress]: Optional callback for tracking download progress
   ///
-  /// Returns an [ApiResponse<T>] with the response data.
+  /// Returns an [ApiResponse<T>] containing:
+  /// - Success case: Response data, status code, and success message
+  /// - Error case: Error details, status code, and error message
   ///
-  /// Throws [ApiError] if the request fails.
+  /// The method handles network errors, timeout errors, and unexpected exceptions
+  /// by wrapping them in an error [ApiResponse] rather than throwing.
   Future<ApiResponse<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
@@ -210,21 +221,32 @@ class ServerService {
             ? null
             : (i, o) => onReceiveProgress(i, o),
       );
+      final defaultMessage = response.statusMessage ?? success;
 
       return ApiResponse.success(
         url: path,
         data: response.data,
         statusCode: response.statusCode,
+        message: defaultMessage,
       );
     } on DioException catch (e) {
-      throw _handleDioError(path, e);
-    } catch (e) {
-      throw ApiError(url: path, message: e.toString());
+      final apiError = _handleDioError(path, e);
+      return ApiResponse.error(
+        url: path,
+        apiError: apiError,
+        message: e.type.name,
+        statusCode: e.response?.statusCode,
+      );
+    } on Exception catch (e, trace) {
+      final apiError =
+          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
+      return ApiResponse.error(
+          url: path, apiError: apiError, message: errorEncountered);
     }
   }
 
   /// Generic POST request
-  /// Performs a POST request to the specified path.
+  /// Performs a POST request to the specified path and returns a standardized [ApiResponse].
   ///
   /// Parameters:
   /// - [path]: The URL path to request
@@ -235,9 +257,12 @@ class ServerService {
   /// - [onSendProgress]: Optional callback for tracking upload progress
   /// - [onReceiveProgress]: Optional callback for tracking download progress
   ///
-  /// Returns an [ApiResponse<T>] with the response data.
+  /// Returns an [ApiResponse<T>] containing:
+  /// - Success case: Response data, status code, and success message
+  /// - Error case: Error details, status code, and error message
   ///
-  /// Throws [ApiError] if the request fails.
+  /// The method handles network errors, timeout errors, and unexpected exceptions
+  /// by wrapping them in an error [ApiResponse] rather than throwing.
   Future<ApiResponse<T>> post<T>(
     String path, {
     dynamic data,
@@ -260,21 +285,32 @@ class ServerService {
             ? null
             : (i, o) => onReceiveProgress(i, o),
       );
+      final defaultMessage = response.statusMessage ?? success;
 
       return ApiResponse.success(
         url: path,
         data: response.data,
         statusCode: response.statusCode,
+        message: defaultMessage,
       );
     } on DioException catch (e) {
-      throw _handleDioError(path, e);
-    } catch (e) {
-      throw ApiError(url: path, message: e.toString());
+      final apiError = _handleDioError(path, e);
+      return ApiResponse.error(
+        url: path,
+        apiError: apiError,
+        message: e.type.name,
+        statusCode: e.response?.statusCode,
+      );
+    } on Exception catch (e, trace) {
+      final apiError =
+          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
+      return ApiResponse.error(
+          url: path, apiError: apiError, message: errorEncountered);
     }
   }
 
   /// Generic PUT request
-  /// Performs a PUT request to the specified path.
+  /// Performs a PUT request to the specified path and returns a standardized [ApiResponse].
   ///
   /// Parameters:
   /// - [path]: The URL path to request
@@ -285,9 +321,12 @@ class ServerService {
   /// - [onSendProgress]: Optional callback for tracking upload progress
   /// - [onReceiveProgress]: Optional callback for tracking download progress
   ///
-  /// Returns an [ApiResponse<T>] with the response data.
+  /// Returns an [ApiResponse<T>] containing:
+  /// - Success case: Response data, status code, and success message
+  /// - Error case: Error details, status code, and error message
   ///
-  /// Throws [ApiError] if the request fails.
+  /// The method handles network errors, timeout errors, and unexpected exceptions
+  /// by wrapping them in an error [ApiResponse] rather than throwing.
   Future<ApiResponse<T>> put<T>(
     String path, {
     dynamic data,
@@ -310,21 +349,32 @@ class ServerService {
             ? (i, o) => onReceiveProgress(i, o)
             : null,
       );
+      final defaultMessage = response.statusMessage ?? success;
 
       return ApiResponse.success(
         url: path,
         data: response.data,
         statusCode: response.statusCode,
+        message: defaultMessage,
       );
     } on DioException catch (e) {
-      throw _handleDioError(path, e);
-    } catch (e) {
-      throw ApiError(url: path, message: e.toString());
+      final apiError = _handleDioError(path, e);
+      return ApiResponse.error(
+        url: path,
+        apiError: apiError,
+        message: e.type.name,
+        statusCode: e.response?.statusCode,
+      );
+    } on Exception catch (e, trace) {
+      final apiError =
+          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
+      return ApiResponse.error(
+          url: path, apiError: apiError, message: errorEncountered);
     }
   }
 
   /// Generic PATCH request
-  /// Performs a PATCH request to the specified path.
+  /// Performs a PATCH request to the specified path and returns a standardized [ApiResponse].
   ///
   /// Parameters:
   /// - [path]: The URL path to request
@@ -335,9 +385,12 @@ class ServerService {
   /// - [onSendProgress]: Optional callback for tracking upload progress
   /// - [onReceiveProgress]: Optional callback for tracking download progress
   ///
-  /// Returns an [ApiResponse<T>] with the response data.
+  /// Returns an [ApiResponse<T>] containing:
+  /// - Success case: Response data, status code, and success message
+  /// - Error case: Error details, status code, and error message
   ///
-  /// Throws [ApiError] if the request fails.
+  /// The method handles network errors, timeout errors, and unexpected exceptions
+  /// by wrapping them in an error [ApiResponse] rather than throwing.
   Future<ApiResponse<T>> patch<T>(
     String path, {
     dynamic data,
@@ -360,21 +413,32 @@ class ServerService {
             ? (i, o) => onReceiveProgress(i, o)
             : null,
       );
+      final defaultMessage = response.statusMessage ?? success;
 
       return ApiResponse.success(
         url: path,
         data: response.data,
         statusCode: response.statusCode,
+        message: defaultMessage,
       );
     } on DioException catch (e) {
-      throw _handleDioError(path, e);
+      final apiError = _handleDioError(path, e);
+      return ApiResponse.error(
+        url: path,
+        apiError: apiError,
+        message: e.type.name,
+        statusCode: e.response?.statusCode,
+      );
     } on Exception catch (e, trace) {
-      throw ApiError(url: path, message: e.toString(), error: trace);
+      final apiError =
+          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
+      return ApiResponse.error(
+          url: path, apiError: apiError, message: errorEncountered);
     }
   }
 
   /// Generic DELETE request
-  /// Performs a DELETE request to the specified path.
+  /// Performs a DELETE request to the specified path and returns a standardized [ApiResponse].
   ///
   /// Parameters:
   /// - [path]: The URL path to request
@@ -383,9 +447,12 @@ class ServerService {
   /// - [options]: Optional Dio request options
   /// - [cancelToken]: Optional token for cancelling the request
   ///
-  /// Returns an [ApiResponse<T>] with the response data.
+  /// Returns an [ApiResponse<T>] containing:
+  /// - Success case: Response data, status code, and success message
+  /// - Error case: Error details, status code, and error message
   ///
-  /// Throws [ApiError] if the request fails.
+  /// The method handles network errors, timeout errors, and unexpected exceptions
+  /// by wrapping them in an error [ApiResponse] rather than throwing.
   Future<ApiResponse<T>> delete<T>(
     String path, {
     dynamic data,
@@ -401,16 +468,27 @@ class ServerService {
         options: options,
         cancelToken: cancelToken,
       );
+      final defaultMessage = response.statusMessage ?? success;
 
       return ApiResponse.success(
         url: path,
         data: response.data,
         statusCode: response.statusCode,
+        message: defaultMessage,
       );
     } on DioException catch (e) {
-      throw _handleDioError(path, e);
+      final apiError = _handleDioError(path, e);
+      return ApiResponse.error(
+        url: path,
+        apiError: apiError,
+        message: e.type.name,
+        statusCode: e.response?.statusCode,
+      );
     } on Exception catch (e, trace) {
-      throw ApiError(url: path, message: e.toString(), error: trace);
+      final apiError =
+          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
+      return ApiResponse.error(
+          url: path, apiError: apiError, message: errorEncountered);
     }
   }
 
@@ -424,6 +502,14 @@ class ServerService {
   /// Handles timeout, bad response, cancellation and other error cases.
   ApiError _handleDioError(String url, DioException error) {
     switch (error.type) {
+      case DioExceptionType.connectionError:
+        return ApiError(
+          url: url,
+          message: !kDebugMode
+              ? 'Connection Error'
+              : 'Connection Error[ ${error.message} ]',
+          error: error,
+        );
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:

@@ -203,7 +203,7 @@ class PostEndpoints {
 
   // V2 endpoints
   static const trending = _PostEndpoint(
-    '/trending',
+    'trending',
     version: ApiVersion.v2,
   );
 }
