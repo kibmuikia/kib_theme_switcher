@@ -41,26 +41,26 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    () async {
+    _sampleApiUsage();
+  }
+
+  Future<void> _sampleApiUsage() async {
+    try {
       final String path = UserEndpoints.userPosts.withParams({'userId': '123'});
-      _serverService.get<Map<String, dynamic>>(
+      final response = await _serverService.get<Map<String, dynamic>>(
         path,
         queryParameters: {"test": "jumping_jack"},
-      ).then(
-        (response) {
-          debugPrint('** MyHomePage:initState: $response');
-          switch (response.success) {
-            case true:
-              // TODO: Handle this case.
-            case false:
-              // TODO: Handle this case.
-          }
-        },
-        onError: (e) {
-          debugPrint('** MyHomePage:initState: error[ $e ] *');
-        },
       );
-    }();
+      debugPrint('** MyHomePage:_sampleApiUsage: $response');
+      switch (response.success) {
+        case true:
+        // TODO: Handle this case.
+        case false:
+        // TODO: Handle this case.
+      }
+    } on Exception catch (e, trace) {
+      debugPrint('** MyHomePage:_sampleApiUsage: $e, \n\t$trace *');
+    }
   }
 
   void _incrementCounter() {
