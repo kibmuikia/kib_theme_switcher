@@ -3,7 +3,9 @@ import 'package:app_http/utils/export.dart'
         ApiConstants,
         ApiError,
         ApiResponse,
+        DioExceptionHandler,
         HttpValidator,
+        ResponseTransformer,
         RetryOptions,
         errorEncountered,
         success;
@@ -188,6 +190,97 @@ class ServerService {
     _dio.options.headers.remove(ApiConstants.authorization);
   }
 
+  /// Generic method to handle all HTTP requests
+  Future<ApiResponse<T>> _request<T>({
+    required String path,
+    required String method,
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    void Function(int, int)? onSendProgress,
+    void Function(int, int)? onReceiveProgress,
+    ResponseTransformer<T>? transformer,
+    DioExceptionHandler? errorHandler,
+  }) async {
+    try {
+      // Merge passed options with default dio options
+      final mergedOptions = _mergeOptions(
+        options,
+        method: method,
+      );
+
+      final response = await _dio.request<T>(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: mergedOptions,
+        cancelToken: cancelToken,
+        onSendProgress:
+            onSendProgress == null ? null : (i, o) => onSendProgress(i, o),
+        onReceiveProgress: onReceiveProgress == null
+            ? null
+            : (i, o) => onReceiveProgress(i, o),
+      );
+
+      final defaultMessage = response.statusMessage ?? success;
+
+      // Transform response data if transformer provided
+      final transformedData = transformer != null
+          ? await transformer(response.data as T)
+          : response.data;
+
+      return ApiResponse.success(
+        url: path,
+        data: transformedData,
+        statusCode: response.statusCode,
+        message: defaultMessage,
+      );
+    } on DioException catch (e) {
+      // Use custom error handler if provided, otherwise fall back to default
+      final apiError = errorHandler != null
+          ? await errorHandler(path, e)
+          : _handleDioError(path, e);
+      return ApiResponse.error(
+        url: path,
+        apiError: apiError,
+        message: e.type.name,
+        statusCode: e.response?.statusCode,
+      );
+    } on Exception catch (e, trace) {
+      final apiError = ApiError(
+        url: path,
+        message: "${e.toString()},\n: $trace",
+        error: e,
+      );
+      return ApiResponse.error(
+        url: path,
+        apiError: apiError,
+        message: errorEncountered,
+      );
+    }
+  }
+
+  /// Merges provided options with default dio options
+  Options _mergeOptions(Options? options, {required String method}) {
+    return Options(
+      method: method,
+      headers: {
+        ..._dio.options.headers,
+        ...?options?.headers,
+      },
+      contentType: options?.contentType ?? _dio.options.contentType,
+      responseType: options?.responseType ?? _dio.options.responseType,
+      validateStatus: options?.validateStatus ?? _dio.options.validateStatus,
+      receiveTimeout: options?.receiveTimeout ?? _dio.options.receiveTimeout,
+      sendTimeout: options?.sendTimeout ?? _dio.options.sendTimeout,
+      extra: {
+        ..._dio.options.extra,
+        ...?options?.extra,
+      },
+    );
+  }
+
   /// Generic GET request
   /// Performs a GET request to the specified path and returns a standardized [ApiResponse].
   ///
@@ -197,6 +290,8 @@ class ServerService {
   /// - [options]: Optional Dio request options
   /// - [cancelToken]: Optional token for cancelling the request
   /// - [onReceiveProgress]: Optional callback for tracking download progress
+  /// - [transformer]: Optional custom response transformer to process the response data before returning the [ApiResponse].
+  /// - [errorHandler]: Optional custom error handler to process exceptions and convert them into a specific [ApiResponse].
   ///
   /// Returns an [ApiResponse<T>] containing:
   /// - Success case: Response data, status code, and success message
@@ -210,39 +305,19 @@ class ServerService {
     Options? options,
     CancelToken? cancelToken,
     void Function(int, int)? onReceiveProgress,
+    ResponseTransformer<T>? transformer,
+    DioExceptionHandler? errorHandler,
   }) async {
-    try {
-      final response = await _dio.get<T>(
-        path,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress == null
-            ? null
-            : (i, o) => onReceiveProgress(i, o),
-      );
-      final defaultMessage = response.statusMessage ?? success;
-
-      return ApiResponse.success(
-        url: path,
-        data: response.data,
-        statusCode: response.statusCode,
-        message: defaultMessage,
-      );
-    } on DioException catch (e) {
-      final apiError = _handleDioError(path, e);
-      return ApiResponse.error(
-        url: path,
-        apiError: apiError,
-        message: e.type.name,
-        statusCode: e.response?.statusCode,
-      );
-    } on Exception catch (e, trace) {
-      final apiError =
-          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
-      return ApiResponse.error(
-          url: path, apiError: apiError, message: errorEncountered);
-    }
+    return _request<T>(
+      path: path,
+      method: 'GET',
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      onReceiveProgress: onReceiveProgress,
+      transformer: transformer,
+      errorHandler: errorHandler,
+    );
   }
 
   /// Generic POST request
@@ -256,6 +331,8 @@ class ServerService {
   /// - [cancelToken]: Optional token for cancelling the request
   /// - [onSendProgress]: Optional callback for tracking upload progress
   /// - [onReceiveProgress]: Optional callback for tracking download progress
+  /// - [transformer]: Optional custom response transformer to process the response data before returning the [ApiResponse].
+  /// - [errorHandler]: Optional custom error handler to process exceptions and convert them into a specific [ApiResponse].
   ///
   /// Returns an [ApiResponse<T>] containing:
   /// - Success case: Response data, status code, and success message
@@ -271,42 +348,21 @@ class ServerService {
     CancelToken? cancelToken,
     void Function(int, int)? onSendProgress,
     void Function(int, int)? onReceiveProgress,
+    ResponseTransformer<T>? transformer,
+    DioExceptionHandler? errorHandler,
   }) async {
-    try {
-      final response = await _dio.post<T>(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress:
-            onSendProgress == null ? null : (i, o) => onSendProgress(i, o),
-        onReceiveProgress: onReceiveProgress == null
-            ? null
-            : (i, o) => onReceiveProgress(i, o),
-      );
-      final defaultMessage = response.statusMessage ?? success;
-
-      return ApiResponse.success(
-        url: path,
-        data: response.data,
-        statusCode: response.statusCode,
-        message: defaultMessage,
-      );
-    } on DioException catch (e) {
-      final apiError = _handleDioError(path, e);
-      return ApiResponse.error(
-        url: path,
-        apiError: apiError,
-        message: e.type.name,
-        statusCode: e.response?.statusCode,
-      );
-    } on Exception catch (e, trace) {
-      final apiError =
-          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
-      return ApiResponse.error(
-          url: path, apiError: apiError, message: errorEncountered);
-    }
+    return _request<T>(
+      path: path,
+      method: 'POST',
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+      transformer: transformer,
+      errorHandler: errorHandler,
+    );
   }
 
   /// Generic PUT request
@@ -320,6 +376,8 @@ class ServerService {
   /// - [cancelToken]: Optional token for cancelling the request
   /// - [onSendProgress]: Optional callback for tracking upload progress
   /// - [onReceiveProgress]: Optional callback for tracking download progress
+  /// - [transformer]: Optional custom response transformer to process the response data before returning the [ApiResponse].
+  /// - [errorHandler]: Optional custom error handler to process exceptions and convert them into a specific [ApiResponse].
   ///
   /// Returns an [ApiResponse<T>] containing:
   /// - Success case: Response data, status code, and success message
@@ -335,42 +393,21 @@ class ServerService {
     CancelToken? cancelToken,
     void Function(int, int)? onSendProgress,
     void Function(int, int)? onReceiveProgress,
+    ResponseTransformer<T>? transformer,
+    DioExceptionHandler? errorHandler,
   }) async {
-    try {
-      final response = await _dio.put<T>(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress:
-            onSendProgress != null ? (i, o) => onSendProgress(i, o) : null,
-        onReceiveProgress: onReceiveProgress != null
-            ? (i, o) => onReceiveProgress(i, o)
-            : null,
-      );
-      final defaultMessage = response.statusMessage ?? success;
-
-      return ApiResponse.success(
-        url: path,
-        data: response.data,
-        statusCode: response.statusCode,
-        message: defaultMessage,
-      );
-    } on DioException catch (e) {
-      final apiError = _handleDioError(path, e);
-      return ApiResponse.error(
-        url: path,
-        apiError: apiError,
-        message: e.type.name,
-        statusCode: e.response?.statusCode,
-      );
-    } on Exception catch (e, trace) {
-      final apiError =
-          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
-      return ApiResponse.error(
-          url: path, apiError: apiError, message: errorEncountered);
-    }
+    return _request<T>(
+      path: path,
+      method: 'PUT',
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+      transformer: transformer,
+      errorHandler: errorHandler,
+    );
   }
 
   /// Generic PATCH request
@@ -384,6 +421,8 @@ class ServerService {
   /// - [cancelToken]: Optional token for cancelling the request
   /// - [onSendProgress]: Optional callback for tracking upload progress
   /// - [onReceiveProgress]: Optional callback for tracking download progress
+  /// - [transformer]: Optional custom response transformer to process the response data before returning the [ApiResponse].
+  /// - [errorHandler]: Optional custom error handler to process exceptions and convert them into a specific [ApiResponse].
   ///
   /// Returns an [ApiResponse<T>] containing:
   /// - Success case: Response data, status code, and success message
@@ -399,42 +438,21 @@ class ServerService {
     CancelToken? cancelToken,
     void Function(int, int)? onSendProgress,
     void Function(int, int)? onReceiveProgress,
+    ResponseTransformer<T>? transformer,
+    DioExceptionHandler? errorHandler,
   }) async {
-    try {
-      final response = await _dio.patch<T>(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress:
-            onSendProgress != null ? (i, o) => onSendProgress(i, o) : null,
-        onReceiveProgress: onReceiveProgress != null
-            ? (i, o) => onReceiveProgress(i, o)
-            : null,
-      );
-      final defaultMessage = response.statusMessage ?? success;
-
-      return ApiResponse.success(
-        url: path,
-        data: response.data,
-        statusCode: response.statusCode,
-        message: defaultMessage,
-      );
-    } on DioException catch (e) {
-      final apiError = _handleDioError(path, e);
-      return ApiResponse.error(
-        url: path,
-        apiError: apiError,
-        message: e.type.name,
-        statusCode: e.response?.statusCode,
-      );
-    } on Exception catch (e, trace) {
-      final apiError =
-          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
-      return ApiResponse.error(
-          url: path, apiError: apiError, message: errorEncountered);
-    }
+    return _request<T>(
+      path: path,
+      method: 'PATCH',
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+      transformer: transformer,
+      errorHandler: errorHandler,
+    );
   }
 
   /// Generic DELETE request
@@ -446,6 +464,8 @@ class ServerService {
   /// - [queryParameters]: Optional query parameters to append to URL
   /// - [options]: Optional Dio request options
   /// - [cancelToken]: Optional token for cancelling the request
+  /// - [transformer]: Optional custom response transformer to process the response data before returning the [ApiResponse].
+  /// - [errorHandler]: Optional custom error handler to process exceptions and convert them into a specific [ApiResponse].
   ///
   /// Returns an [ApiResponse<T>] containing:
   /// - Success case: Response data, status code, and success message
@@ -459,37 +479,19 @@ class ServerService {
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
+    ResponseTransformer<T>? transformer,
+    DioExceptionHandler? errorHandler,
   }) async {
-    try {
-      final response = await _dio.delete<T>(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-      );
-      final defaultMessage = response.statusMessage ?? success;
-
-      return ApiResponse.success(
-        url: path,
-        data: response.data,
-        statusCode: response.statusCode,
-        message: defaultMessage,
-      );
-    } on DioException catch (e) {
-      final apiError = _handleDioError(path, e);
-      return ApiResponse.error(
-        url: path,
-        apiError: apiError,
-        message: e.type.name,
-        statusCode: e.response?.statusCode,
-      );
-    } on Exception catch (e, trace) {
-      final apiError =
-          ApiError(url: path, message: "${e.toString()},\n: $trace", error: e);
-      return ApiResponse.error(
-          url: path, apiError: apiError, message: errorEncountered);
-    }
+    return _request<T>(
+      path: path,
+      method: 'DELETE',
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      transformer: transformer,
+      errorHandler: errorHandler,
+    );
   }
 
   /// Handles Dio errors and converts them to [ApiError] instances.

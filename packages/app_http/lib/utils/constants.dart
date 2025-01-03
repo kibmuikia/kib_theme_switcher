@@ -1,3 +1,8 @@
+import 'dart:async' show FutureOr;
+
+import 'package:app_http/utils/api_error.dart' show ApiError;
+import 'package:dio/dio.dart' show DioException;
+
 class ApiConstants {
   const ApiConstants._();
 
@@ -19,3 +24,10 @@ class ApiConstants {
 
 const String errorEncountered = "Error Encountered";
 const String success = "Success";
+
+/// Type definition for response transformation function
+typedef ResponseTransformer<T> = FutureOr<T> Function(T data);
+
+/// Type definition for custom error handling function
+typedef DioExceptionHandler = Future<ApiError> Function(
+    String url, DioException error);
