@@ -248,15 +248,16 @@ class ServerService {
         statusCode: e.response?.statusCode,
       );
     } on Exception catch (e, trace) {
+      final errorType = e.runtimeType.toString();
       final apiError = ApiError(
         url: path,
-        message: "${e.toString()},\n: $trace",
+        message: "[$errorType] ${e.toString()},\n\tStack-trace: $trace",
         error: e,
       );
       return ApiResponse.error(
         url: path,
         apiError: apiError,
-        message: errorEncountered,
+        message: "$errorEncountered: $errorType",
       );
     }
   }
