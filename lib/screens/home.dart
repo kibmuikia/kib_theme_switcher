@@ -1,20 +1,27 @@
+import 'package:app_http/app_http.dart' show ServerService, UserEndpoints;
 import 'package:flutter/material.dart'
     show
         AppBar,
         BuildContext,
+        Card,
         Center,
         Column,
+        EdgeInsets,
         FloatingActionButton,
         Icon,
+        IconButton,
         Icons,
+        MainAxisSize,
+        Padding,
+        Row,
         Scaffold,
+        SizedBox,
         State,
         StatefulWidget,
         Text,
         Theme,
-        Widget;
-
-import 'package:flutter/material.dart';
+        Widget,
+        debugPrint;
 import 'package:kib_theme_switcher/common_export.dart' show ThemeService, getIt;
 
 class MyHomePage extends StatefulWidget {
@@ -29,6 +36,32 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final _themeService = getIt<ThemeService>();
+  final _serverService = getIt<ServerService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _sampleApiUsage();
+  }
+
+  Future<void> _sampleApiUsage() async {
+    try {
+      final String path = UserEndpoints.userPosts.withParams({'userId': '123'});
+      final response = await _serverService.get<Map<String, dynamic>>(
+        path,
+        queryParameters: {"test": "jumping_jack"},
+      );
+      debugPrint('** MyHomePage:_sampleApiUsage: $response');
+      switch (response.success) {
+        case true:
+        // TODO: Handle this case.
+        case false:
+        // TODO: Handle this case.
+      }
+    } on Exception catch (e, trace) {
+      debugPrint('** MyHomePage:_sampleApiUsage: $e, \n\t$trace *');
+    }
+  }
 
   void _incrementCounter() {
     setState(() {

@@ -17,13 +17,11 @@ class AppColors {
   static const Map<String, Color> lightTheme = {
     'primary': purple,
     'secondary': amber,
-    'background': white,
-    'surface': offWhite,
+    'surface': white,
     'error': Color(0xFFB3261E),
     'text': black,
     'onPrimary': white,
     'onSecondary': black,
-    'onBackground': black,
     'onSurface': black,
     'onError': white,
   };
@@ -32,13 +30,11 @@ class AppColors {
   static const Map<String, Color> darkTheme = {
     'primary': Color(0xFF9E8CFF),  // Lighter purple for dark theme
     'secondary': Color(0xFFFFD88A), // Lighter amber for dark theme
-    'background': Color(0xFF121212),
-    'surface': Color(0xFF1E1E1E),
+    'surface': Color(0xFF121212),
     'error': Color(0xFFCF6679),
     'text': white,
     'onPrimary': black,
     'onSecondary': black,
-    'onBackground': white,
     'onSurface': white,
     'onError': black,
   };
