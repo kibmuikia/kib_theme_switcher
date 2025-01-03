@@ -15,6 +15,7 @@ import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'models/theme_mode_model.dart';
+import 'models/user_model.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -37,6 +38,67 @@ final _entities = <obx_int.ModelEntity>[
             flags: 0),
         obx_int.ModelProperty(
             id: const obx_int.IdUid(3, 4194516950331066119),
+            name: 'createdAt',
+            type: 10,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(2, 4770230362978716949),
+      name: 'UserModel',
+      lastPropertyId: const obx_int.IdUid(10, 1334135131845324837),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 8929599031356645993),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 8894498818730468214),
+            name: 'uid',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(1, 8278921147180249673)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 3686505616528521774),
+            name: 'email',
+            type: 9,
+            flags: 2080,
+            indexId: const obx_int.IdUid(2, 6491882871533267904)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 8687738322192148323),
+            name: 'displayName',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 6470751833752511721),
+            name: 'phoneNumber',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 5439725296789890440),
+            name: 'photoUrl',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 378624735367121720),
+            name: 'isEmailVerified',
+            type: 1,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 4334511481040570339),
+            name: 'isActive',
+            type: 1,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(9, 2779906631762941843),
+            name: 'updatedAt',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(10, 1334135131845324837),
             name: 'createdAt',
             type: 10,
             flags: 0)
@@ -80,8 +142,8 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(1, 5613669997621632093),
-      lastIndexId: const obx_int.IdUid(0, 0),
+      lastEntityId: const obx_int.IdUid(2, 4770230362978716949),
+      lastIndexId: const obx_int.IdUid(2, 6491882871533267904),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
@@ -123,6 +185,79 @@ obx_int.ModelDefinition getObjectBoxModel() {
               id: idParam, mode: modeParam, createdAt: createdAtParam);
 
           return object;
+        }),
+    UserModel: obx_int.EntityDefinition<UserModel>(
+        model: _entities[1],
+        toOneRelations: (UserModel object) => [],
+        toManyRelations: (UserModel object) => {},
+        getId: (UserModel object) => object.id,
+        setId: (UserModel object, int id) {
+          object.id = id;
+        },
+        objectToFB: (UserModel object, fb.Builder fbb) {
+          final uidOffset = fbb.writeString(object.uid);
+          final emailOffset = fbb.writeString(object.email);
+          final displayNameOffset = object.displayName == null
+              ? null
+              : fbb.writeString(object.displayName!);
+          final phoneNumberOffset = object.phoneNumber == null
+              ? null
+              : fbb.writeString(object.phoneNumber!);
+          final photoUrlOffset = object.photoUrl == null
+              ? null
+              : fbb.writeString(object.photoUrl!);
+          fbb.startTable(11);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, uidOffset);
+          fbb.addOffset(2, emailOffset);
+          fbb.addOffset(3, displayNameOffset);
+          fbb.addOffset(4, phoneNumberOffset);
+          fbb.addOffset(5, photoUrlOffset);
+          fbb.addBool(6, object.isEmailVerified);
+          fbb.addBool(7, object.isActive);
+          fbb.addInt64(8, object.updatedAt.millisecondsSinceEpoch);
+          fbb.addInt64(9, object.createdAt.millisecondsSinceEpoch);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final uidParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final emailParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final displayNameParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 10);
+          final phoneNumberParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 12);
+          final photoUrlParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 14);
+          final isEmailVerifiedParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 16, false);
+          final isActiveParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 18, false);
+          final updatedAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0));
+          final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 22, 0));
+          final object = UserModel(
+              id: idParam,
+              uid: uidParam,
+              email: emailParam,
+              displayName: displayNameParam,
+              phoneNumber: phoneNumberParam,
+              photoUrl: photoUrlParam,
+              isEmailVerified: isEmailVerifiedParam,
+              isActive: isActiveParam,
+              updatedAt: updatedAtParam,
+              createdAt: createdAtParam);
+
+          return object;
         })
   };
 
@@ -142,4 +277,47 @@ class ThemeModeModel_ {
   /// See [ThemeModeModel.createdAt].
   static final createdAt =
       obx.QueryDateProperty<ThemeModeModel>(_entities[0].properties[2]);
+}
+
+/// [UserModel] entity fields to define ObjectBox queries.
+class UserModel_ {
+  /// See [UserModel.id].
+  static final id =
+      obx.QueryIntegerProperty<UserModel>(_entities[1].properties[0]);
+
+  /// See [UserModel.uid].
+  static final uid =
+      obx.QueryStringProperty<UserModel>(_entities[1].properties[1]);
+
+  /// See [UserModel.email].
+  static final email =
+      obx.QueryStringProperty<UserModel>(_entities[1].properties[2]);
+
+  /// See [UserModel.displayName].
+  static final displayName =
+      obx.QueryStringProperty<UserModel>(_entities[1].properties[3]);
+
+  /// See [UserModel.phoneNumber].
+  static final phoneNumber =
+      obx.QueryStringProperty<UserModel>(_entities[1].properties[4]);
+
+  /// See [UserModel.photoUrl].
+  static final photoUrl =
+      obx.QueryStringProperty<UserModel>(_entities[1].properties[5]);
+
+  /// See [UserModel.isEmailVerified].
+  static final isEmailVerified =
+      obx.QueryBooleanProperty<UserModel>(_entities[1].properties[6]);
+
+  /// See [UserModel.isActive].
+  static final isActive =
+      obx.QueryBooleanProperty<UserModel>(_entities[1].properties[7]);
+
+  /// See [UserModel.updatedAt].
+  static final updatedAt =
+      obx.QueryDateProperty<UserModel>(_entities[1].properties[8]);
+
+  /// See [UserModel.createdAt].
+  static final createdAt =
+      obx.QueryDateProperty<UserModel>(_entities[1].properties[9]);
 }
