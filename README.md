@@ -39,6 +39,35 @@ lib/
     - `app_theme.dart`: Theme configuration using Material 3
     - `theme_service.dart`: Theme management service
 
+### Project Packages
+
+The project is organized into modular packages for better separation of concerns:
+
+### app_database
+
+A dedicated package for handling all database operations using ObjectBox:
+
+- Provides type-safe database operations
+- Implements DAO (Data Access Object) pattern
+- Features:
+  - Base DAO implementation for common operations
+  - Database service singleton
+
+### app_http
+
+A robust HTTP client package built on top of Dio:
+
+- Environment-specific configurations (development/production)
+- Features:
+  - Standardized API responses
+  - Built-in error handling
+  - Request/response logging
+  - Retry mechanism
+  - Progress tracking for uploads/downloads
+  - Support for all standard HTTP methods
+  - Header management
+  - Type-safe API path construction
+
 ## Getting Started
 
 ### Prerequisites
