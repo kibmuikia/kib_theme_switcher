@@ -3,6 +3,10 @@ import 'package:app_http/app_http.dart'
     show ApiError, ApiResponse, ServerService, UserEndpoints;
 import 'package:flutter/foundation.dart' show debugPrint;
 
+typedef UserResult = ({UserModel? user, Exception? e});
+
+const String invalidId = 'ID cannot be empty';
+
 /// Service to handle user-related operations both locally and remotely
 class UserService {
   final DatabaseService _databaseService;
@@ -15,16 +19,6 @@ class UserService {
   })  : _databaseService = databaseService,
         _serverService = serverService;
 
-  /// Get local user by uid
-  UserModel? getLocalUser(String uid) {
-    try {
-      return _databaseService.userModelDao.getByUid(uid);
-    } on Exception catch (e) {
-      debugPrint('** UserService:getLocalUser: $e *');
-      return null;
-    }
-  }
-
   /// Save user data locally
   Future<bool> _saveLocally(UserModel user) async {
     try {
@@ -36,27 +30,61 @@ class UserService {
     }
   }
 
-  /// Get remote user profile
-  Future<ApiResponse<UserModel>?> getRemoteUser(String uid) async {
-    final String path = UserEndpoints.userById.withParams({'userId': uid});
-    ApiResponse<UserModel>? response;
+  /// Get local user by uid
+  UserResult getLocalUser(String uid) {
     try {
-      response = await _serverService.get<UserModel>(
+      if (uid.isEmpty) {
+        return (user: null, e: Exception(invalidId));
+      }
+      final user = _databaseService.userModelDao.getByUid(uid);
+      if (user == null) {
+        return (user: null, e: Exception('User[$uid] Not Found'));
+      }
+      return (user: user, e: null);
+    } on Exception catch (e) {
+      debugPrint('** UserService:getLocalUser: $e *');
+      return (user: null, e: e);
+    }
+  }
+
+  /// Get remote user profile
+  Future<UserResult> getRemoteUser(String uid) async {
+    if (uid.isEmpty) {
+      return (user: null, e: Exception(invalidId));
+    }
+
+    String path = "";
+    UserModel? gotUser;
+
+    try {
+      path = UserEndpoints.userById.withParams({'userId': uid});
+      final response = await _serverService.get<Map<String, dynamic>>(
         path,
       );
-      if (response.success && response.data != null) {
-        final user = response.data!;
-        // Save to local database
-        await _saveLocally(user);
+      final Map<String, dynamic>? data = response.data;
+
+      if (!response.success || data == null) {
+        return (
+          user: null,
+          e: response.apiError ??
+              Exception(response.message ?? 'Failed to fetch user')
+        );
       }
-      return response;
+
+      try {
+        gotUser = UserModel.fromJson(data);
+
+        await _saveLocally(gotUser);
+
+        return (user: gotUser, e: null);
+      } on Exception catch (e) {
+        return (
+          user: null,
+          e: Exception('Failed to parse user data: ${e.toString()}')
+        );
+      }
     } on Exception catch (e) {
-      debugPrint('** UserService:getRemoteUser: $e *');
-      return ApiResponse.error(
-        url: path,
-        message: e.toString(),
-        apiError: ApiError(url: path, message: e.toString(), error: e),
-      );
+      return (user: gotUser, e: e);
     }
   }
 

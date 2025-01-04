@@ -1,4 +1,3 @@
-import 'package:app_http/app_http.dart' show ServerService, UserEndpoints;
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -22,7 +21,8 @@ import 'package:flutter/material.dart'
         Theme,
         Widget,
         debugPrint;
-import 'package:kib_theme_switcher/common_export.dart' show ThemeService, getIt;
+import 'package:kib_theme_switcher/common_export.dart'
+    show ThemeService, getIt, UserService;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -36,28 +36,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final _themeService = getIt<ThemeService>();
-  final _serverService = getIt<ServerService>();
+  final _userService = getIt<UserService>();
 
   @override
   void initState() {
     super.initState();
-    _sampleApiUsage();
+    _sampleServiceUsage();
   }
 
-  Future<void> _sampleApiUsage() async {
+  Future<void> _sampleServiceUsage() async {
     try {
-      final String path = UserEndpoints.userPosts.withParams({'userId': '123'});
-      final response = await _serverService.get<Map<String, dynamic>>(
-        path,
-        queryParameters: {"test": "jumping_jack"},
-      );
-      debugPrint('** MyHomePage:_sampleApiUsage: $response');
-      switch (response.success) {
-        case true:
-        // TODO: Handle this case.
-        case false:
-        // TODO: Handle this case.
-      }
+      final result = await _userService
+          .getRemoteUser('7741edd2-4f29-404b-a6b7-6a7c205c292a');
+      debugPrint('** MyHomePage:_sampleApiUsage: $result');
     } on Exception catch (e, trace) {
       debugPrint('** MyHomePage:_sampleApiUsage: $e, \n\t$trace *');
     }

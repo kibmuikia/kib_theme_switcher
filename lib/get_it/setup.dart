@@ -52,7 +52,7 @@ void _setupThemeServices() {
 }
 
 /// Setup User services
-Future<void> _setupUserServices() async {
+void _setupUserServices() {
   // Register UserService as a singleton with required dependencies
   getIt.registerLazySingleton<UserService>(
         () => UserService(
