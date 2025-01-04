@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart' show SharedPreferenc
 abstract class BasePrefsAsync extends BasePrefs {
   /// The async preferences instance
   late final SharedPreferencesAsync _prefs;
+  /// Whether preferences have been initialized
+  bool _initialized = false;
 
   BasePrefsAsync({
     required super.prefix,
@@ -14,17 +16,37 @@ abstract class BasePrefsAsync extends BasePrefs {
   });
 
   /// Initialize the preferences
-  Future<void> init() async {
+  Future<bool> init() async {
     try {
       _prefs = SharedPreferencesAsync();
+      _initialized = true;
+      return _initialized;
     } on Exception catch (e) {
       debugPrint('** BasePrefsAsync:init: $e *');
+      _initialized = false;
+      return _initialized;
     }
+  }
+
+  /// Checks if the preferences are initialized
+  ///
+  /// [throwOnError] - If true, throws a [StateError] when not initialized
+  /// Returns true if initialized, false otherwise (when [throwOnError] is false)
+  /// Throws [StateError] when not initialized and [throwOnError] is true
+  bool checkInitialized({bool throwOnError = false}) {
+    if (!_initialized && throwOnError) {
+      throw StateError('BasePrefsCached not initialized. Call init() before using preferences.');
+    }
+    return _initialized;
   }
 
   /// Get a value from preferences
   Future<T?> getValue<T>(String key) async {
     try {
+      // Will return false if not initialized instead of throwing
+      if (!checkInitialized()) return null;
+      if (key.isEmpty) return null;
+
       final fullKey = getPrefixedKey(key);
       if (!isKeyAllowed(fullKey)) return null;
 
@@ -51,6 +73,10 @@ abstract class BasePrefsAsync extends BasePrefs {
   /// Set a value in preferences
   Future<bool> setValue<T>(String key, T value) async {
     try {
+      // Will return false if not initialized instead of throwing
+      if (!checkInitialized()) return false;
+      if (key.isEmpty) return false;
+
       final fullKey = getPrefixedKey(key);
       if (!isKeyAllowed(fullKey)) return false;
 
@@ -82,6 +108,10 @@ abstract class BasePrefsAsync extends BasePrefs {
   /// Remove a value from preferences
   Future<bool> removeValue(String key) async {
     try {
+      // Will return false if not initialized instead of throwing
+      if (!checkInitialized()) return false;
+      if (key.isEmpty) return false;
+
       final fullKey = getPrefixedKey(key);
       if (!isKeyAllowed(fullKey)) return false;
       await _prefs.remove(fullKey);
@@ -95,6 +125,9 @@ abstract class BasePrefsAsync extends BasePrefs {
   /// Clear all values
   Future<bool> clear() async {
     try {
+      // Will return false if not initialized instead of throwing
+      if (!checkInitialized()) return false;
+
       await _prefs.clear();
       return true;
     } on Exception catch (e) {
