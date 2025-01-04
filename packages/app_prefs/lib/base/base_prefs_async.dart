@@ -1,11 +1,13 @@
 import 'package:app_prefs/base/base_prefs.dart' show BasePrefs;
-import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:shared_preferences/shared_preferences.dart' show SharedPreferencesAsync;
+import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
+import 'package:shared_preferences/shared_preferences.dart'
+    show SharedPreferencesAsync;
 
 /// Base class for async preferences management
 abstract class BasePrefsAsync extends BasePrefs {
   /// The async preferences instance
   late final SharedPreferencesAsync _prefs;
+
   /// Whether preferences have been initialized
   bool _initialized = false;
 
@@ -19,14 +21,14 @@ abstract class BasePrefsAsync extends BasePrefs {
   Future<bool> init() async {
     try {
       if (_initialized) {
-        debugPrint('** BasePrefsAsync: Already initialized *');
+        kprint.warn('BasePrefsAsync: Already initialized');
         return true;
       }
       _prefs = SharedPreferencesAsync();
       _initialized = true;
       return _initialized;
     } on Exception catch (e) {
-      debugPrint('** BasePrefsAsync:init: $e *');
+      kprint.err('BasePrefsAsync:init: $e');
       _initialized = false;
       return _initialized;
     }
@@ -39,7 +41,8 @@ abstract class BasePrefsAsync extends BasePrefs {
   /// Throws [StateError] when not initialized and [throwOnError] is true
   bool checkInitialized({bool throwOnError = false}) {
     if (!_initialized && throwOnError) {
-      throw StateError('BasePrefsAsync not initialized. Call init() before using preferences.');
+      throw StateError(
+          'BasePrefsAsync not initialized. Call init() before using preferences.');
     }
     return _initialized;
   }
@@ -69,7 +72,7 @@ abstract class BasePrefsAsync extends BasePrefs {
           throw UnsupportedError('Type $T not supported by SharedPreferences');
       }
     } on Exception catch (e) {
-      debugPrint('** BasePrefsAsync:getValue:[$key] $e *');
+      kprint.err('asePrefsAsync:getValue:[$key] $e');
       return null;
     }
   }
@@ -104,7 +107,7 @@ abstract class BasePrefsAsync extends BasePrefs {
           throw UnsupportedError('Type $T not supported by SharedPreferences');
       }
     } on Exception catch (e) {
-      debugPrint('** BasePrefsAsync:setValue:[$key - $value] $e *');
+      kprint.err('BasePrefsAsync:setValue:[$key - $value] $e');
       return false;
     }
   }
@@ -121,7 +124,7 @@ abstract class BasePrefsAsync extends BasePrefs {
       await _prefs.remove(fullKey);
       return true;
     } on Exception catch (e) {
-      debugPrint('** BasePrefsAsync:removeValue:[$key] $e *');
+      kprint.err('BasePrefsAsync:removeValue:[$key] $e');
       return false;
     }
   }
@@ -135,7 +138,7 @@ abstract class BasePrefsAsync extends BasePrefs {
       await _prefs.clear();
       return true;
     } on Exception catch (e) {
-      debugPrint('** BasePrefsAsync:clear: $e *');
+      kprint.err('BasePrefsAsync:clear: $e');
       return false;
     }
   }

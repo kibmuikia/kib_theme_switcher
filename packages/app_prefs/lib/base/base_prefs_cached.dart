@@ -1,5 +1,5 @@
 import 'package:app_prefs/base/base_prefs.dart' show BasePrefs;
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
 import 'package:shared_preferences/shared_preferences.dart'
     show SharedPreferencesWithCache, SharedPreferencesWithCacheOptions;
 
@@ -21,7 +21,7 @@ abstract class BasePrefsCached extends BasePrefs {
   Future<bool> init() async {
     try {
       if (_initialized) {
-        debugPrint('** BasePrefsCached: Already initialized *');
+        kprint.warn('BasePrefsCached: Already initialized');
         return true;
       }
       _prefs = await SharedPreferencesWithCache.create(
@@ -32,7 +32,7 @@ abstract class BasePrefsCached extends BasePrefs {
       _initialized = true;
       return _initialized;
     } on Exception catch (e) {
-      debugPrint('** BasePrefsCached:init: $e *');
+      kprint.err('BasePrefsCached:init: $e');
       _initialized = false;
       return _initialized;
     }
@@ -76,7 +76,7 @@ abstract class BasePrefsCached extends BasePrefs {
           throw UnsupportedError('Type $T not supported by SharedPreferences');
       }
     } on Exception catch (e) {
-      debugPrint('** BasePrefsCached:getValue:[$key]: $e *');
+      kprint.err('BasePrefsCached:getValue:[$key]: $e');
       return null;
     }
   }
@@ -111,7 +111,7 @@ abstract class BasePrefsCached extends BasePrefs {
           throw UnsupportedError('Type $T not supported by SharedPreferences');
       }
     } on Exception catch (e) {
-      debugPrint('** BasePrefsCached:setValue:[$key - $value]: $e *');
+      kprint.err('BasePrefsCached:setValue:[$key - $value]: $e');
       return false;
     }
   }
@@ -128,7 +128,7 @@ abstract class BasePrefsCached extends BasePrefs {
       await _prefs.remove(fullKey);
       return true;
     } on Exception catch (e) {
-      debugPrint('** BasePrefsCached:removeValue:[$key]: $e *');
+      kprint.err('BasePrefsCached:removeValue:[$key]: $e');
       return false;
     }
   }
@@ -142,7 +142,7 @@ abstract class BasePrefsCached extends BasePrefs {
       await _prefs.clear();
       return true;
     } on Exception catch (e) {
-      debugPrint('** BasePrefsCached:clear: $e *');
+      kprint.err('BasePrefsCached:clear: $e');
       return false;
     }
   }
@@ -155,7 +155,7 @@ abstract class BasePrefsCached extends BasePrefs {
 
       await _prefs.reloadCache();
     } on Exception catch (e) {
-      debugPrint('** BasePrefsCached:reload: $e *');
+      kprint.err('BasePrefsCached:reload: $e');
     }
   }
 
