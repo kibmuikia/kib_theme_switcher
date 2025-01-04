@@ -16,11 +16,15 @@ abstract class BasePrefsCached extends BasePrefs {
 
   /// Initialize the preferences
   Future<void> init() async {
-    _prefs = await SharedPreferencesWithCache.create(
-      cacheOptions: SharedPreferencesWithCacheOptions(
-        allowList: allowList,
-      ),
-    );
+    try {
+      _prefs = await SharedPreferencesWithCache.create(
+        cacheOptions: SharedPreferencesWithCacheOptions(
+          allowList: allowList,
+        ),
+      );
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsCached:init: $e *');
+    }
   }
 
   /// Get a value from preferences synchronously
@@ -43,7 +47,8 @@ abstract class BasePrefsCached extends BasePrefs {
         default:
           throw UnsupportedError('Type $T not supported by SharedPreferences');
       }
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsCached:getValue:[$key]: $e *');
       return null;
     }
   }
@@ -73,7 +78,8 @@ abstract class BasePrefsCached extends BasePrefs {
         default:
           throw UnsupportedError('Type $T not supported by SharedPreferences');
       }
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsCached:setValue:[$key - $value]: $e *');
       return false;
     }
   }
@@ -85,7 +91,8 @@ abstract class BasePrefsCached extends BasePrefs {
       if (!isKeyAllowed(fullKey)) return false;
       await _prefs.remove(fullKey);
       return true;
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsCached:removeValue:[$key]: $e *');
       return false;
     }
   }
@@ -95,7 +102,8 @@ abstract class BasePrefsCached extends BasePrefs {
     try {
       await _prefs.clear();
       return true;
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsCached:clear: $e *');
       return false;
     }
   }
@@ -105,7 +113,7 @@ abstract class BasePrefsCached extends BasePrefs {
     try {
       await _prefs.reloadCache();
     } on Exception catch (e) {
-      debugPrint('BasePrefsCached:reload: $e');
+      debugPrint('** BasePrefsCached:reload: $e *');
     }
   }
 

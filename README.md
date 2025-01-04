@@ -68,6 +68,24 @@ A robust HTTP client package built on top of Dio:
   - Header management
   - Type-safe API path construction
 
+### app_prefs
+
+A flexible shared preferences management package with support for both synchronous and asynchronous operations:
+
+- Multiple preference management approaches:
+  - Asynchronous preferences (AsyncPrefs)
+  - Cached preferences with synchronous access (CachedPrefs)
+  - Base abstractions for extensibility
+- Features:
+  - Specialized managers for different domains:
+    - App preferences (general settings)
+    - Authentication preferences
+    - Theme preferences with caching
+  - Type-safe preference access
+  - Centralized preference key management
+  - Easy initialization and cleanup
+  - Built on top of shared_preferences package
+
 ## Getting Started
 
 ### Prerequisites

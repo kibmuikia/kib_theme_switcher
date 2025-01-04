@@ -1,4 +1,5 @@
 import 'package:app_prefs/base/base_prefs.dart' show BasePrefs;
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:shared_preferences/shared_preferences.dart' show SharedPreferencesAsync;
 
 /// Base class for async preferences management
@@ -14,7 +15,11 @@ abstract class BasePrefsAsync extends BasePrefs {
 
   /// Initialize the preferences
   Future<void> init() async {
-    _prefs = SharedPreferencesAsync();
+    try {
+      _prefs = SharedPreferencesAsync();
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsAsync:init: $e *');
+    }
   }
 
   /// Get a value from preferences
@@ -37,7 +42,8 @@ abstract class BasePrefsAsync extends BasePrefs {
         default:
           throw UnsupportedError('Type $T not supported by SharedPreferences');
       }
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsAsync:getValue:[$key] $e *');
       return null;
     }
   }
@@ -67,7 +73,8 @@ abstract class BasePrefsAsync extends BasePrefs {
         default:
           throw UnsupportedError('Type $T not supported by SharedPreferences');
       }
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsAsync:setValue:[$key - $value] $e *');
       return false;
     }
   }
@@ -79,7 +86,8 @@ abstract class BasePrefsAsync extends BasePrefs {
       if (!isKeyAllowed(fullKey)) return false;
       await _prefs.remove(fullKey);
       return true;
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      debugPrint('** BasePrefsAsync:removeValue:[$key] $e *');
       return false;
     }
   }
@@ -90,6 +98,7 @@ abstract class BasePrefsAsync extends BasePrefs {
       await _prefs.clear();
       return true;
     } on Exception catch (e) {
+      debugPrint('** BasePrefsAsync:clear: $e *');
       return false;
     }
   }
