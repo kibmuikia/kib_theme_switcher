@@ -18,6 +18,10 @@ abstract class BasePrefsAsync extends BasePrefs {
   /// Initialize the preferences
   Future<bool> init() async {
     try {
+      if (_initialized) {
+        debugPrint('** BasePrefsAsync: Already initialized *');
+        return true;
+      }
       _prefs = SharedPreferencesAsync();
       _initialized = true;
       return _initialized;
@@ -35,7 +39,7 @@ abstract class BasePrefsAsync extends BasePrefs {
   /// Throws [StateError] when not initialized and [throwOnError] is true
   bool checkInitialized({bool throwOnError = false}) {
     if (!_initialized && throwOnError) {
-      throw StateError('BasePrefsCached not initialized. Call init() before using preferences.');
+      throw StateError('BasePrefsAsync not initialized. Call init() before using preferences.');
     }
     return _initialized;
   }

@@ -20,6 +20,10 @@ abstract class BasePrefsCached extends BasePrefs {
   /// Initialize the preferences
   Future<bool> init() async {
     try {
+      if (_initialized) {
+        debugPrint('** BasePrefsCached: Already initialized *');
+        return true;
+      }
       _prefs = await SharedPreferencesWithCache.create(
         cacheOptions: SharedPreferencesWithCacheOptions(
           allowList: allowList,
