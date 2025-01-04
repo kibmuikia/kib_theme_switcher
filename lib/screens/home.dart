@@ -48,9 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       final result = await _userService
           .getRemoteUser('7741edd2-4f29-404b-a6b7-6a7c205c292a');
-      debugPrint('** MyHomePage:_sampleApiUsage: $result');
+      debugPrint('** MyHomePage:_sampleServiceUsage: $result');
     } on Exception catch (e, trace) {
-      debugPrint('** MyHomePage:_sampleApiUsage: $e, \n\t$trace *');
+      debugPrint('** MyHomePage:_sampleServiceUsage: $e, \n\t$trace *');
     }
   }
 
