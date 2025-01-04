@@ -1,7 +1,7 @@
 import 'package:app_database/app_database.dart' show DatabaseService, UserModel;
 import 'package:app_http/app_http.dart' show ServerService, UserEndpoints;
 import 'package:app_prefs/app_prefs.dart' show AuthPrefsManager;
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:kib_theme_switcher/common_export.dart' show dprint;
 
 typedef UserResult = ({UserModel? user, Exception? e});
 
@@ -35,7 +35,7 @@ class UserService {
       final result = _databaseService.userModelDao.saveUser(user);
       return result > 0;
     } on Exception catch (e) {
-      debugPrint('** UserService:_saveLocally: $e *');
+      dprint.err('UserService:_saveLocally: $e');
       return false;
     }
   }
@@ -49,7 +49,7 @@ class UserService {
       ]);
       return !results.contains(false);
     } on Exception catch (e) {
-      debugPrint('** UserService:_saveAuthState: $e *');
+      dprint.err('UserService:_saveAuthState: $e');
       return false;
     }
   }
@@ -62,7 +62,7 @@ class UserService {
         _authPrefs.setUserId(''),
       ]);
     } on Exception catch (e) {
-      debugPrint('** UserService:logout: $e *');
+      dprint.err('UserService:logout: $e');
     }
   }
 
@@ -87,7 +87,7 @@ class UserService {
       }
       return (user: user, e: null);
     } on Exception catch (e) {
-      debugPrint('** UserService:getLocalUser: $e *');
+      dprint.err('UserService:getLocalUser: $e');
       return (user: null, e: e);
     }
   }
