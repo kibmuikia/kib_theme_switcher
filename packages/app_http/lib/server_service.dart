@@ -12,6 +12,7 @@ import 'package:app_http/utils/export.dart'
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart' show RetryInterceptor;
 import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:kib_debug_print/kib_debug_print.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart' show PrettyDioLogger;
 
 /// A service class that handles HTTP requests using Dio client.
@@ -102,6 +103,16 @@ class ServerService {
         ),
       );
     }
+    kprint.lg(
+'''
+initialized service-service with:
+  baseUrl: $baseUrl,
+  enableLogging: $enableLogging,
+  enableRetry: $enableRetry,
+  headers: $headers,
+''',
+      symbol: '🌐',
+    );
   }
 
   /// Creates a ServerService instance configured for development environment.

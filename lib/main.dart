@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:kib_theme_switcher/common_export.dart'
-    show MyHomePage, ThemeService, getIt, setupServiceLocator;
+    show DebugPrintService, MyHomePage, ThemeService, getIt, setupServiceLocator;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  DebugPrintService.initialize();
   // Initialize service locator
   await setupServiceLocator();
 

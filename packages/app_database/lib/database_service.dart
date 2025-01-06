@@ -2,6 +2,7 @@ import 'package:app_database/dao/export.dart';
 import 'package:app_database/models/export.dart';
 import 'package:app_database/objectbox.g.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
+import 'package:kib_debug_print/kib_debug_print.dart';
 import 'package:path_provider/path_provider.dart' show getApplicationDocumentsDirectory;
 import 'package:path/path.dart' as p;
 
@@ -29,25 +30,33 @@ class DatabaseService {
   /// Initialize the database
   static Future<DatabaseService> create() async {
     final service = DatabaseService._create();
-    await service._init();
+    final result =  await service._init();
+    kprint.lg("database initialisation: $result", symbol: "💾");
     _instance = service;
     return service;
   }
 
   /// Initialize ObjectBox
-  Future<void> _init() async {
-    final docsDir = await getApplicationDocumentsDirectory();
-    final dbDirectory = p.join(docsDir.path, "objectbox");
+  Future<bool> _init() async {
+    try {
+      final docsDir = await getApplicationDocumentsDirectory();
+      final dbDirectory = p.join(docsDir.path, "objectbox");
 
-    _store = await openStore(directory: dbDirectory);
+      _store = await openStore(directory: dbDirectory);
 
-    if (kDebugMode && Admin.isAvailable()) {
-      _admin = Admin(_store);
+      if (kDebugMode && Admin.isAvailable()) {
+        _admin = Admin(_store);
+      }
+
+      // Initialize DAOs
+      themeModeDao = ThemeModeDao(_store.box<ThemeModeModel>());
+      userModelDao = UserModelDao(_store.box<UserModel>());
+
+      return true;
+    } on Exception catch (e, trace) {
+      kprint.err("$e,\n$trace");
+      return false;
     }
-
-    // Initialize DAOs
-    themeModeDao = ThemeModeDao(_store.box<ThemeModeModel>());
-    userModelDao = UserModelDao(_store.box<UserModel>());
   }
 
   /// Close the database

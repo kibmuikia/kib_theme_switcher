@@ -13,6 +13,7 @@ dependencies:
   dio: ^5.7.0
   dio_smart_retry: ^7.0.1
   pretty_dio_logger: ^1.4.0
+  kib_debug_print: ^1.0.0
 
 dev_dependencies:
   flutter_test:

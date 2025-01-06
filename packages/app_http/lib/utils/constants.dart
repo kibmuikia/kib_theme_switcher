@@ -11,9 +11,9 @@ class ApiConstants {
   static const String baseUrlProd = 'https://api.example.com';
 
   // Timeouts
-  static const Duration connectionTimeout = Duration(seconds: 30);
-  static const Duration receiveTimeout = Duration(seconds: 30);
-  static const Duration sendTimeout = Duration(seconds: 30);
+  static const Duration connectionTimeout = Duration(seconds: 15);
+  static const Duration receiveTimeout = Duration(seconds: 15);
+  static const Duration sendTimeout = Duration(seconds: 15);
 
   // Headers
   static const String contentType = 'Content-Type';
