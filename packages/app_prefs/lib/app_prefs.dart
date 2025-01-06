@@ -50,9 +50,9 @@ class AppPrefs {
       theme = ThemeCachedPrefsManager();
 
       await Future.wait([
-        app.init(),
-        auth.init(),
-        theme.init(),
+        app.init("AppAsyncPrefsManager"),
+        auth.init("AuthPrefsManager"),
+        theme.init("ThemeCachedPrefsManager"),
       ]);
 
       _initialized = true;

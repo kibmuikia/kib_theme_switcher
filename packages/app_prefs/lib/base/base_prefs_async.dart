@@ -18,7 +18,7 @@ abstract class BasePrefsAsync extends BasePrefs {
   });
 
   /// Initialize the preferences
-  Future<bool> init() async {
+  Future<bool> init(String managerName) async {
     try {
       if (_initialized) {
         kprint.warn('BasePrefsAsync: Already initialized');
@@ -26,6 +26,7 @@ abstract class BasePrefsAsync extends BasePrefs {
       }
       _prefs = SharedPreferencesAsync();
       _initialized = true;
+      kprint.lg('initialized $managerName', symbol: '💾');
       return _initialized;
     } on Exception catch (e) {
       kprint.err('BasePrefsAsync:init: $e');

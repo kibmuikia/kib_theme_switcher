@@ -18,7 +18,7 @@ abstract class BasePrefsCached extends BasePrefs {
   });
 
   /// Initialize the preferences
-  Future<bool> init() async {
+  Future<bool> init(String managerName) async {
     try {
       if (_initialized) {
         kprint.warn('BasePrefsCached: Already initialized');
@@ -30,6 +30,7 @@ abstract class BasePrefsCached extends BasePrefs {
         ),
       );
       _initialized = true;
+      kprint.lg('initialized $managerName', symbol: '💾');
       return _initialized;
     } on Exception catch (e) {
       kprint.err('BasePrefsCached:init: $e');
