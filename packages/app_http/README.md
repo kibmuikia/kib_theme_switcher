@@ -146,18 +146,9 @@ class ApiError implements Exception {
 Default timeout settings can be modified in `ApiConstants`:
 
 ```dart
-static const Duration connectionTimeout = Duration(seconds: 30);
-static const Duration receiveTimeout = Duration(seconds: 30);
-static const Duration sendTimeout = Duration(seconds: 30);
-```
-
-### Base URLs
-
-Configure base URLs for different environments in `ApiConstants`:
-
-```dart
-static const String baseUrlDev = 'https://api.dev.example.com';
-static const String baseUrlProd = 'https://api.example.com';
+static const Duration connectionTimeout = Duration(seconds: 15);
+static const Duration receiveTimeout = Duration(seconds: 15);
+static const Duration sendTimeout = Duration(seconds: 15);
 ```
 
 ## Error Handling
