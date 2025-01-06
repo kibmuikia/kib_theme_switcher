@@ -4,7 +4,7 @@ version: 0.0.1
 homepage: https://github.com/kibmuikia/kib_theme_switcher
 
 environment:
-  sdk: ^3.5.4
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -14,11 +14,14 @@ dependencies:
   dio_smart_retry: ^7.0.1
   pretty_dio_logger: ^1.4.0
   kib_debug_print: ^1.0.0
+  envied: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  build_runner: ^2.4.13
+  envied_generator: ^1.0.0
 
 dependency_overrides:
   http_parser: ^4.1.1
