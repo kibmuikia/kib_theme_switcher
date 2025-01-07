@@ -19,12 +19,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-  build_runner: ^2.4.13
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.14
   envied_generator: ^1.0.0
 
 dependency_overrides:
-  http_parser: ^4.1.1
+  http_parser: ^4.1.2
   collection: ^1.19.1
 
 # For information on the generic Dart part of this file, see the
