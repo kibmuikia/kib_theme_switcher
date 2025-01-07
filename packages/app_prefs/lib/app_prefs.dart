@@ -45,9 +45,9 @@ class AppPrefs {
     }
 
     try {
-      app = AppAsyncPrefsManager();
       auth = AuthPrefsManager();
       theme = ThemeCachedPrefsManager();
+      app = AppAsyncPrefsManager();
 
       await Future.wait([
         app.init("AppAsyncPrefsManager"),

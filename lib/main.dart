@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:kib_debug_print/kib_debug_print.dart' show DebugPrintService;
 import 'package:kib_theme_switcher/common_export.dart'
-    show DebugPrintService, MyHomePage, ThemeService, getIt, setupServiceLocator;
+    show MyHomePage, ThemeService, getIt, setupServiceLocator;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +13,6 @@ void main() async {
 
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

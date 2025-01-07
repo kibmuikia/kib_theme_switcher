@@ -20,8 +20,9 @@ import 'package:flutter/material.dart'
         Text,
         Theme,
         Widget;
+import 'package:kib_debug_print/kib_debug_print.dart' show kprint;
 import 'package:kib_theme_switcher/common_export.dart'
-    show ThemeService, UserService, dprint, getIt;
+    show ThemeService, UserService, getIt;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -47,9 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       const sampleId = '7741edd2-4f29-404b-a6b7-6a7c205c292a';
       final result = await _userService.getRemoteUser(sampleId);
-      dprint.lg('MyHomePage:_sampleServiceUsage:[sampleId: $sampleId] $result');
+      kprint.lg('MyHomePage:_sampleServiceUsage:[sampleId: $sampleId] $result');
     } on Exception catch (e, trace) {
-      dprint.err('MyHomePage:_sampleServiceUsage: $e, \n\t$trace');
+      kprint.err('MyHomePage:_sampleServiceUsage: $e, \n\t$trace');
     }
   }
 
