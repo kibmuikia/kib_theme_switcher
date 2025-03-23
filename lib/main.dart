@@ -2,9 +2,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:kib_debug_print/kib_debug_print.dart' show DebugPrintService;
 import 'package:kib_theme_switcher/common_export.dart'
-    show MyHomePage, ThemeService, getIt, setupServiceLocator;
-import 'package:kib_theme_switcher/screens/auth/login_screen.dart';
-import 'package:kib_theme_switcher/screens/auth/signup_screen.dart';
+    show ThemeService, getIt, setupServiceLocator, LoginScreen;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +28,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: kDebugMode,
           title: 'Kib Switcher',
           theme: theme,
-          // home: const MyHomePage(title: 'The Switcharoo'),
+          // home: const MyHomePage(title: 'The Switcher'),
           // home: const SignupScreen(),
           home: const LoginScreen(),
         );

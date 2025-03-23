@@ -1,5 +1,4 @@
 import 'package:app_database/models/theme_mode_model.dart' show ThemeModeModel;
-import 'package:objectbox/objectbox.dart' show Box, Query, Order;
 import 'package:app_database/objectbox.g.dart';
 
 import 'base.dart';

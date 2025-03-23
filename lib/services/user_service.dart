@@ -120,6 +120,7 @@ class UserService {
         gotUser = UserModel.fromJson(data);
 
         await _saveLocally(gotUser);
+        await _saveAuthState(gotUser.uid, "sampleToken");
 
         return (user: gotUser, e: null);
       } on Exception catch (e) {

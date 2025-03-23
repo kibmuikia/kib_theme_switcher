@@ -4,8 +4,7 @@ import 'package:app_prefs/app_prefs.dart'
     show
         AppAsyncPrefsManager,
         AppPrefs,
-        AuthPrefsManager,
-        ThemeCachedPrefsManager;
+        AuthPrefsManager;
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:get_it/get_it.dart';
 import 'package:kib_theme_switcher/services/export.dart';
