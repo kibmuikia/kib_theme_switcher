@@ -1,48 +1,57 @@
 import 'dart:convert' show jsonEncode;
 
+import 'package:app_database/models/model_ids.dart' show ModelId;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:objectbox/objectbox.dart';
 
 part 'user_model.g.dart';
 
-@Entity()
+@Entity(uid: ModelId.userModel)
 @JsonSerializable()
 class UserModel {
   @Id()
-  int id;
+  @Property(uid: 8929599031356645993)
+  int autoId;
 
   /// Unique identifier from authentication provider
   @Unique()
   @JsonKey(required: true)
+  @Property(uid: 8894498818730468214)
   String uid;
 
   /// User's email address
   @Unique()
   @JsonKey(required: true)
+  @Property(uid: 3686505616528521774)
   String email;
 
   /// User's display name
   @JsonKey(includeIfNull: false, name: 'display_name')
+  @Property(uid: 8687738322192148323)
   String? displayName;
 
   /// User's phone number
   @JsonKey(includeIfNull: false, name: 'phone_number')
+  @Property(uid: 6470751833752511721)
   String? phoneNumber;
 
   /// URL to user's profile photo
   @JsonKey(includeIfNull: false, name: 'photo_url')
+  @Property(uid: 5439725296789890440)
   String? photoUrl;
 
   /// Whether the user's email is verified
-  @JsonKey(defaultValue: false, name: 'is_email_verified')
+  @JsonKey(name: 'is_email_verified')
+  @Property(uid: 378624735367121720)
   bool isEmailVerified;
 
   /// Whether the user account is active
-  @JsonKey(defaultValue: false, name: 'is_active')
+  @JsonKey(name: 'is_active')
+  @Property(uid: 4334511481040570339)
   bool isActive;
 
   /// Last time user data was updated
-  @Property(type: PropertyType.date)
+  @Property(type: PropertyType.date, uid: 2779906631762941843)
   @JsonKey(
     toJson: _dateToJson,
     fromJson: _dateFromJson,
@@ -50,7 +59,7 @@ class UserModel {
   DateTime updatedAt;
 
   /// When the user was created
-  @Property(type: PropertyType.date)
+  @Property(type: PropertyType.date, uid: 1334135131845324837)
   @JsonKey(
     toJson: _dateToJson,
     fromJson: _dateFromJson,
@@ -59,14 +68,14 @@ class UserModel {
 
   // Constructor with named parameters
   UserModel({
-    this.id = 0,
+    this.autoId = 0,
     required this.uid,
     required this.email,
     this.displayName,
     this.phoneNumber,
     this.photoUrl,
     this.isEmailVerified = false,
-    this.isActive = true,
+    this.isActive = false,
     DateTime? updatedAt,
     DateTime? createdAt,
   })  : updatedAt = updatedAt ?? DateTime.now(),
@@ -99,7 +108,7 @@ class UserModel {
     DateTime? createdAt,
   }) {
     return UserModel(
-      id: id,
+      autoId: autoId,
       uid: uid ?? this.uid,
       email: email ?? this.email,
       displayName: displayName ?? this.displayName,

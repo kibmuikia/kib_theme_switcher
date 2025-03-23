@@ -10,7 +10,7 @@
       "properties": [
         {
           "id": "1:8608593761304787301",
-          "name": "id",
+          "name": "autoId",
           "type": 6,
           "flags": 1
         },
@@ -34,7 +34,7 @@
       "properties": [
         {
           "id": "1:8929599031356645993",
-          "name": "id",
+          "name": "autoId",
           "type": 6,
           "flags": 1
         },
