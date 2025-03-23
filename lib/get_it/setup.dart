@@ -36,7 +36,6 @@ Future<void> _setupPrefs() async {
 void _registerPreferences() {
   getIt.registerLazySingleton<AppAsyncPrefsManager>(() => AppPrefs.app);
   getIt.registerLazySingleton<AuthPrefsManager>(() => AppPrefs.auth);
-  getIt.registerLazySingleton<ThemeCachedPrefsManager>(() => AppPrefs.theme);
 }
 
 /// Setup database related dependencies

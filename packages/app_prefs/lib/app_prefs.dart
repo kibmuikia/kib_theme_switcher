@@ -32,9 +32,6 @@ class AppPrefs {
   /// Manager for authentication-related preferences
   static late final AuthPrefsManager auth;
 
-  /// Manager for theme-related preferences
-  static late final ThemeCachedPrefsManager theme;
-
   /// Initializes all preference managers.
   ///
   /// Should be called at app startup before accessing any preferences.
@@ -46,13 +43,11 @@ class AppPrefs {
 
     try {
       auth = AuthPrefsManager();
-      theme = ThemeCachedPrefsManager();
       app = AppAsyncPrefsManager();
 
       await Future.wait([
         app.init("AppAsyncPrefsManager"),
         auth.init("AuthPrefsManager"),
-        theme.init("ThemeCachedPrefsManager"),
       ]);
 
       _initialized = true;
@@ -72,7 +67,6 @@ class AppPrefs {
     await Future.wait([
       app.clear(),
       auth.clear(),
-      theme.clear(),
     ]);
 
     _initialized = false;
