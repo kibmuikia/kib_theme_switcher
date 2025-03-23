@@ -9,10 +9,10 @@ export 'package:app_prefs/managers/export.dart';
 ///
 /// Usage:
 /// ```dart
-/// // Initialize preferences
+///   Initialize preferences
 /// await AppPrefs.init();
 ///
-/// // Access specific managers
+///   Access specific managers
 /// AppPrefs.theme.isDarkMode;
 /// AppPrefs.auth.isLoggedIn;
 /// ```
