@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:kib_theme_switcher/common_export.dart' show ThemeService, getIt;
 import 'package:kib_theme_switcher/screens/auth/login_screen.dart'
     show LoginScreen;
 
@@ -14,11 +15,22 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _emailFieldKey = GlobalKey<FormBuilderFieldState>();
+  final _themeService = getIt<ThemeService>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
+      appBar: AppBar(
+        title: const Text('Sign Up'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _themeService.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+            ),
+            onPressed: _themeService.toggleTheme,
+          ),
+        ],
+      ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
         alignment: Alignment.topCenter,
