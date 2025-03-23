@@ -1,7 +1,7 @@
 name: app_database
 description: "A Flutter package project to handle database operations for application-kib_theme_switcher"
 version: 0.0.1
-homepage:
+homepage: "https://github.com/kibmuikia/kib_theme_switcher"
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -32,7 +32,7 @@ dependency_overrides:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
-flutter:
+# flutter:
 
   # To add assets to your package, add an assets section, like this:
   # assets:
